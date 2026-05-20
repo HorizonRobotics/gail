@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="RankQ">
+  <meta name="keywords" content="RankQ, Reinforcement Learning, Robotics">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RankQ</title>
+  <link rel="icon" type="image/x-icon" href="../../resources/favicon.ico">
+  <link rel="stylesheet" href="../../style.css">
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    body {
+      --page-font-family: monospace;
+      --page-font-size: 16px;
+      --page-max-width: 1100px;
+      --title-max-width: 950px;
+      --page-background: #f2f2f2;
+      background: var(--page-background);
+      color: #111;
+      font-family: var(--page-font-family);
+      font-size: var(--page-font-size);
+    }
+
+    header {
+      width: min(var(--title-max-width), 100%);
+      margin-bottom: 0.5em;
+      border-bottom: 0;
+    }
+
+    main {
+      max-width: var(--page-max-width);
+    }
+
+    section {
+      margin-top: 2.5em;
+      margin-bottom: 2.5em;
+    }
+
+    .paper-meta {
+      text-align: center;
+      margin-top: 0.5em;
+      margin-bottom: 1em;
+    }
+
+    .paper-meta p {
+      margin: 0.5em 0;
+    }
+
+    #abstract p {
+      max-width: 1050px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: justify;
+    }
+
+    .main-figure {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 14px;
+    }
+
+    .result-figure {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin: 1.5em 0;
+      border-radius: 14px;
+    }
+
+    .narrow-result-figure {
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .sim2real-table {
+      width: 100%;
+      margin: 0;
+    }
+
+    .sim2real-summary {
+      display: grid;
+      grid-template-columns: minmax(0, 60%) minmax(0, 40%);
+      gap: 2em;
+      align-items: center;
+      margin: 1.5em 0;
+    }
+
+    .sim2real-summary p {
+      margin: 0;
+    }
+
+    .result-caption {
+      max-width: 1200px;
+      margin-top: -0.75em;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+      font-size: 0.95em;
+    }
+
+    .main-figure-caption {
+      margin: 0.75em auto 0;
+      text-align: justify;
+    }
+
+    #methodology p {
+      text-align: justify;
+    }
+
+    .methodology-list {
+      margin: 0.5em 0 1em 1.5em;
+      padding-left: 1em;
+    }
+
+    .methodology-list li {
+      margin-bottom: 0.45em;
+    }
+
+    .equation-block {
+      margin: 1em 0;
+      overflow-x: auto;
+    }
+
+    .video-comparison-header,
+    .video-comparison-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1em;
+    }
+
+    .video-comparison-header {
+      font-size: 1.2em;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 1em;
+    }
+
+    .video-comparison-row {
+      margin-bottom: 1em;
+    }
+
+    .video-comparison-row video {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .sim2real-summary {
+        grid-template-columns: 1fr;
+        gap: 1em;
+      }
+
+      .video-comparison-header {
+        display: none;
+      }
+
+      .video-comparison-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    #bibtex pre {
+      background: #e8eef5;
+      border: 1px solid #b9c7d6;
+      border-radius: 6px;
+      padding: 1em;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>RankQ: Offline-to-Online Reinforcement Learning via Self-Supervised Action Ranking</h1>
+  </header>
+
+  <main>
+    <section class="paper-meta">
+      <p>
+        <strong>Andrew Choi<sup>1</sup> and Wei Xu<sup>1,&dagger;</sup></strong><br>
+        <code>{firstname.lastname}@horizon.auto</code><br>
+        <sup>1</sup>Horizon Robotics <sup>&dagger;</sup>Corresponding author
+      </p>
+      <p>
+        <a href="https://arxiv.org/abs/2605.11151" target="_blank" rel="noopener noreferrer">arXiv</a>
+        |
+        <a href="https://arxiv.org/pdf/2605.11151" target="_blank" rel="noopener noreferrer">PDF</a>
+      </p>
+    </section>
+
+    <section id="main-figure">
+      <img class="main-figure" src="figures/toy_example.png" alt="RankQ toy example">
+      <p class="result-caption main-figure-caption">
+        Toy example visualizing the Q-landscape for a fixed state $s$ and 2D action space $(a_0, a_1) \in \mathcal A$ under different critic objectives after offline training.
+        The first row shows the 3D Q-manifold; the second row shows a 2D projection with eight sampled actions and their gradient ascent trajectories; and the third row shows $\partial Q/\partial a$ magnitudes.
+        By explicitly shaping the Q-landscape, RankQ enables the largest number of trajectories to converge toward the optimal action region.
+      </p>
+    </section>
+
+    <section id="abstract">
+      <h2>Abstract</h2>
+      <p>
+        Offline-to-online reinforcement learning (RL) improves sample efficiency by leveraging pre-collected datasets prior to online interaction.
+        A key challenge, however, is learning an accurate critic in large state--action spaces with limited dataset coverage.
+        To mitigate harmful updates from value overestimation, prior methods impose pessimism by down-weighting out-of-distribution (OOD) actions relative to dataset actions.
+        While effective, this essentially acts as a behavior cloning anchor and can hinder downstream online policy improvement when dataset actions are suboptimal.
+        We propose RankQ, an offline-to-online Q-learning objective that augments temporal-difference learning with a self-supervised multi-term ranking loss to enforce structured action ordering.
+        By learning relative action preferences rather than uniformly penalizing unseen actions, RankQ shapes the Q-function such that action gradients are directed toward higher-quality behaviors.
+        Across sparse reward D4RL benchmarks, RankQ achieves performance competitive with or superior to seven prior methods.
+        In vision-based robot learning, RankQ enables effective offline-to-online fine-tuning of a pretrained vision-language-action (VLA) model in a low-data regime, achieving on average a 42.7% higher simulation success rate than the next best method.
+        In a high-data setting, RankQ improves simulation performance by 13.7% over the next best method and achieves strong sim-to-real transfer, increasing real-world cube stacking success from 43.1% to 88.9% relative to the VLA’s initial performance.
+      </p>
+    </section>
+
+    <section id="methodology">
+      <h2>Methodology</h2>
+      <p>
+        Rather than treating all OOD actions as equally inferior, RankQ enforces structured action ordering in a way that shapes the Q-landscape to point toward optimal actions.
+        We partition the dataset $\mathcal D$ into two unique subsets containing exclusively success and failure trajectories, denoted by $\mathcal D_{\text{success}}$ and $\mathcal D_{\text{failure}}$.
+        For transitions $(s,a) \sim \mathcal D_{\text{success}}$, we construct several classes of self-supervised suboptimal actions that capture different types of deviations from optimal behavior:
+      </p>
+      <ul class="methodology-list">
+        <li><strong>Noisy actions:</strong> $a_\epsilon = a + \epsilon$, where $\epsilon \sim \mathcal N(0, \sigma)$, representing actions with small perturbations.</li>
+        <li><strong>Very noisy actions:</strong> $a_{2\epsilon} = a + 2\epsilon$, representing actions with larger perturbations.</li>
+        <li><strong>Random actions:</strong> $a_r \sim \mathcal U(-1,1)^{|a|}$, representing arbitrary actions.</li>
+        <li><strong>Permuted actions:</strong> $a_p \sim \mathcal D$, representing actions sampled from unrelated states.</li>
+      </ul>
+      <p>
+        These constructions allow us to impose structured ordering constraints. First, we enforce that successful actions are preferred over all suboptimal variants:
+      </p>
+      <div class="equation-block">
+        \[
+        Q(s,a) > Q(s,a'), \quad
+        a' \in \{a_{\epsilon}, a_{2\epsilon}, a_r, a_p\}, \;
+        (s,a) \sim \mathcal{D}_{\mathrm{success}}.
+        \]
+      </div>
+      <p>
+        Enforcing only this success-ranking constraint would essentially produce a Q-landscape with a gradient field similar to CQL and Cal-QL.
+        Rather than stopping here, we also enforce ordering among suboptimal actions by using action-space proximity to successful actions as a heuristic for relative quality:
+      </p>
+      <div class="equation-block">
+        \[
+        Q(s,a_{\epsilon}) > Q(s,a_{2\epsilon}) > Q(s,a_r).
+        \]
+      </div>
+      <p>
+        Finally, we incorporate failure trajectories to provide additional supervision in low-quality regions of the state space.
+        We enforce that a failure dataset action is still preferable to random actions:
+      </p>
+      <div class="equation-block">
+        \[
+        Q(s,a) > Q(s,a_r), \; (s,a)\sim \mathcal D_{\textrm{failure}},
+        \]
+      </div>
+      <p>
+        but refrain from imposing stronger ordering constraints due to the absence of a meaningful notion of relative quality.
+        The full multi-term pairwise ranking loss is formulated in the paper.
+      </p>
+    </section>
+
+    <section id="results">
+      <h2>D4RL Results</h2>
+      <img class="result-figure" src="figures/d4rl_results.png" alt="D4RL results">
+      <p class="result-caption">Sparse-reward D4RL benchmark results across 3 random seeds. Curves start after offline RL has concluded.</p>
+      <p>
+        RankQ achieves performance competitive with or superior to seven prior methods for the antmaze and adroit environments.
+      </p>
+
+      <h2>VLA RL fine-tuning with low-data regime Results</h2>
+      <img class="result-figure" src="figures/vla-low-data.png" alt="VLA low-data results">
+      <p class="result-caption">Low-data VLA RL fine-tuning results across 3 random seeds. Curves start after offline RL has concluded.</p>
+      <p>
+        We define the low-data regime as using 200 VLA self-rollouts as the offline dataset together with 8 online rollouts per update.
+        Using this limited data budget, RankQ is the only algorithm that significantly improves the VLA beyond its baseline performance.
+        Note that since cube stacking and spoon-into-bowl have only about a 20% initial success rate, roughly 80% of the offline dataset consists of failure trajectories.
+        <strong>RankQ has on average 42% higher success rate compared to the next best method.</strong>
+      </p>
+
+      <h2>VLA RL fine-tuning with high-data regime Results</h2>
+      <img class="result-figure narrow-result-figure" src="figures/sim2real_results.png" alt="Sim-to-real results">
+      <p class="result-caption">High-data VLA RL fine-tuning results across 3 random seeds. Curves start after offline RL has concluded.</p>
+      <p>
+        We define a high-data regime as using 800 VLA self-rollouts as the offline dataset together with 192 online rollouts per update.
+        WIth an initial VLA success rate of about 8%, only about 64 successful trajectories exist in the offline dataset.
+        Extensive domain randomization is used for this environment to enable sim-to-real transfer.
+        <strong>RankQ has a 13.7% higher success rate and 25.7% faster task completion speed compared to the next best method.</strong>
+      </p>
+
+      <h2>Sim-to-Real Results</h2>
+      <div class="sim2real-summary">
+        <p>
+          We zero-shot transfer two RankQ checkpoints trained in the high-data regime in the real world and compare their performance against the initial VLA and Cal-QL over 288 real-world experiments.
+          <strong>With just 40% of the online training required by Cal-QL, RankQ (0.4) achieves comparative performance while increasing cube stacking success from 43.1% to 88.9% relative to the initial VLA.</strong>
+          Reasons for RankQ (1.0)'s lower performance are described in the paper.
+        </p>
+        <img class="result-figure sim2real-table" src="figures/sim2real_table.png" alt="Sim-to-real table">
+      </div>
+
+      <div class="video-comparison-header">
+        <div>Initial VLA</div>
+        <div>RankQ (0.4)</div>
+      </div>
+
+      <div class="video-comparison-row">
+        <video muted loop playsinline controls preload="metadata" src="videos/baseline_videos/baseline_exp_37.mp4"></video>
+        <video muted loop playsinline controls preload="metadata" src="videos/rl_videos/rl_exp_37.mp4"></video>
+      </div>
+      <p>
+        <strong>Exp. 37.</strong>
+        The initial VLA misses the grasp on the green cube and then hovers in confusion.
+        RankQ grasps and stacks the cubes in one attempt.
+      </p>
+
+      <div class="video-comparison-row">
+        <video muted loop playsinline controls preload="metadata" src="videos/baseline_videos/baseline_exp_50.mp4"></video>
+        <video muted loop playsinline controls preload="metadata" src="videos/rl_videos/rl_exp_50.mp4"></video>
+      </div>
+      <p>
+        <strong>Exp. 50.</strong>
+        The initial VLA fails its first grasp attempt and afterward attempts to stack the green cube but ends up pushing the yellow cube out-of-reach.
+        RankQ grasps and stacks the cubes in one attempt.
+      </p>
+
+      <div class="video-comparison-row">
+        <video muted loop playsinline controls preload="metadata" src="videos/baseline_videos/baseline_exp_8.mp4"></video>
+        <video muted loop playsinline controls preload="metadata" src="videos/rl_videos/rl_exp_8.mp4"></video>
+      </div>
+      <p>
+        <strong>Exp. 8.</strong>
+        The initial VLA repeatedly misses the grasp on the green cube. It eventually succeeds but then times out before stacking.
+        RankQ grasps and stacks the cubes in one attempt.
+      </p>
+    </section>
+
+      <div class="video-comparison-row">
+        <video muted loop playsinline controls preload="metadata" src="videos/baseline_videos/baseline_exp_22.mp4"></video>
+        <video muted loop playsinline controls preload="metadata" src="videos/rl_videos/rl_exp_22.mp4"></video>
+      </div>
+      <p>
+        <strong>Exp. 22.</strong>
+        The initial VLA fails its initial grasp and its initial stack attempt. It then gets stuck trying to regrasp.
+        RankQ also fails the initial stack but quickly reattempts the task, succeeding before timeout.
+      </p>
+
+    <section id="bibtex">
+      <h2>Citation</h2>
+      If our work has proved useful, please consider citing our work:
+      <pre><code>@misc{choi2026rankqofflinetoonlinereinforcementlearning,
+      title={RankQ: Offline-to-Online Reinforcement Learning via Self-Supervised Action Ranking},
+      author={Andrew Choi and Wei Xu},
+      year={2026},
+      eprint={2605.11151},
+      archivePrefix={arXiv},
+      primaryClass={cs.AI},
+      url={https://arxiv.org/abs/2605.11151},
+}</code></pre>
+    </section>
+
+    <section>
+      <p>
+        <a href="../../">Back to GAIL</a>
+      </p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p class="footer-text"><strong>Horizon Robotics GAIL</strong></p>
+  </footer>
+</body>
+</html>
