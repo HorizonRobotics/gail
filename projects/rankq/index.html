@@ -83,6 +83,23 @@
       margin-right: auto;
     }
 
+    .sim2real-table {
+      width: 100%;
+      margin: 0;
+    }
+
+    .sim2real-summary {
+      display: grid;
+      grid-template-columns: minmax(0, 60%) minmax(0, 40%);
+      gap: 2em;
+      align-items: center;
+      margin: 1.5em 0;
+    }
+
+    .sim2real-summary p {
+      margin: 0;
+    }
+
     .result-caption {
       max-width: 1200px;
       margin-top: -0.75em;
@@ -141,6 +158,11 @@
     }
 
     @media (max-width: 768px) {
+      .sim2real-summary {
+        grid-template-columns: 1fr;
+        gap: 1em;
+      }
+
       .video-comparison-header {
         display: none;
       }
@@ -198,7 +220,7 @@
         By learning relative action preferences rather than uniformly penalizing unseen actions, RankQ shapes the Q-function such that action gradients are directed toward higher-quality behaviors.
         Across sparse reward D4RL benchmarks, RankQ achieves performance competitive with or superior to seven prior methods.
         In vision-based robot learning, RankQ enables effective offline-to-online fine-tuning of a pretrained vision-language-action (VLA) model in a low-data regime, achieving on average a 42.7% higher simulation success rate than the next best method.
-        In a high-data setting, RankQ improves simulation performance by 13.7% over the next best method and achieves strong sim-to-real transfer, increasing real-world cube stacking success from 43.1% to 84.7% relative to the VLA’s initial performance.
+        In a high-data setting, RankQ improves simulation performance by 13.7% over the next best method and achieves strong sim-to-real transfer, increasing real-world cube stacking success from 43.1% to 88.9% relative to the VLA’s initial performance.
       </p>
     </section>
 
@@ -278,14 +300,20 @@
       </p>
 
       <h2>Sim-to-Real Results</h2>
-      <p>
-        We zero-shot sim-to-real deploy a RankQ policy trained with the high-data regime in the real world and compare its performance with the VLA's initial performance.
-        <strong>RankQ increases real-world cube stacking success from 43.1% to 84.7% while increasing the average task completion speed by 20.3% over 144 experiments. </strong>
-      </p>
+      <div class="sim2real-summary">
+        <p>
+          We zero-shot transfer two RankQ checkpoints trained in the high-data regime in the real world and compare their performance against the initial VLA and Cal-QL over 288 real-world experiments.
+          <strong>With just 40% of the online training required by Cal-QL, RankQ (0.4) achieves comparative performance while increasing cube stacking success from 43.1% to 88.9% relative to the initial VLA.</strong>
+          Reasons for RankQ (1.0)'s lower performance are described in the paper.
+        </p>
+        <img class="result-figure sim2real-table" src="figures/sim2real_table.png" alt="Sim-to-real table">
+      </div>
+
       <div class="video-comparison-header">
         <div>Initial VLA</div>
-        <div>After RankQ fine-tuning</div>
+        <div>RankQ (0.4)</div>
       </div>
+
       <div class="video-comparison-row">
         <video muted loop playsinline controls preload="metadata" src="videos/baseline_videos/baseline_exp_37.mp4"></video>
         <video muted loop playsinline controls preload="metadata" src="videos/rl_videos/rl_exp_37.mp4"></video>
@@ -293,39 +321,39 @@
       <p>
         <strong>Exp. 37.</strong>
         The initial VLA misses the grasp on the green cube and then hovers in confusion.
-        After RankQ fine-tuning, the policy is able to grab and stack the cubes in one attempt.
+        RankQ grasps and stacks the cubes in one attempt.
       </p>
+
       <div class="video-comparison-row">
-        <video muted loop playsinline controls preload="metadata" src="videos/baseline_videos/baseline_exp_15.mp4"></video>
-        <video muted loop playsinline controls preload="metadata" src="videos/rl_videos/rl_exp_15.mp4"></video>
+        <video muted loop playsinline controls preload="metadata" src="videos/baseline_videos/baseline_exp_50.mp4"></video>
+        <video muted loop playsinline controls preload="metadata" src="videos/rl_videos/rl_exp_50.mp4"></video>
       </div>
       <p>
-        <strong>Exp. 15.</strong>
-        The initial VLA attempts to grasp the green cube repeatedly without success.
-        After RankQ fine-tuning, the policy is able to grab and stack the cubes in one attempt.
+        <strong>Exp. 50.</strong>
+        The initial VLA fails its first grasp attempt and afterward attempts to stack the green cube but ends up pushing the yellow cube out-of-reach.
+        RankQ grasps and stacks the cubes in one attempt.
       </p>
+
       <div class="video-comparison-row">
-        <video muted loop playsinline controls preload="metadata" src="videos/baseline_videos/baseline_exp_25.mp4"></video>
-        <video muted loop playsinline controls preload="metadata" src="videos/rl_videos/rl_exp_25.mp4"></video>
+        <video muted loop playsinline controls preload="metadata" src="videos/baseline_videos/baseline_exp_8.mp4"></video>
+        <video muted loop playsinline controls preload="metadata" src="videos/rl_videos/rl_exp_8.mp4"></video>
       </div>
       <p>
-        <strong>Exp. 25.</strong>
-        The initial VLA moves toward the green cube, but after the cubes get occluded by the manipulator, the policy hovers
-        in confusion.
-        After RankQ fine-tuning, the policy misses its first grasp attempt but then quickly and deliberately stacks the cube
-        successfully.
-      </p>
-      <div class="video-comparison-row">
-        <video muted loop playsinline controls preload="metadata" src="videos/baseline_videos/baseline_exp_6.mp4"></video>
-        <video muted loop playsinline controls preload="metadata" src="videos/rl_videos/rl_exp_6.mp4"></video>
-      </div>
-      <p>
-        <strong>Exp. 6.</strong>
-        The initial VLA misses the grasp on the green cube and then hovers in confusion.
-        After RankQ fine-tuning, the policy also misses some grasp attempts and even drops the cube early.
-        Despite this, the RankQ policy quickly reattempts the task, leading to success.
+        <strong>Exp. 8.</strong>
+        The initial VLA repeatedly misses the grasp on the green cube. It eventually succeeds but then times out before stacking.
+        RankQ grasps and stacks the cubes in one attempt.
       </p>
     </section>
+
+      <div class="video-comparison-row">
+        <video muted loop playsinline controls preload="metadata" src="videos/baseline_videos/baseline_exp_22.mp4"></video>
+        <video muted loop playsinline controls preload="metadata" src="videos/rl_videos/rl_exp_22.mp4"></video>
+      </div>
+      <p>
+        <strong>Exp. 22.</strong>
+        The initial VLA fails its initial grasp and its initial stack attempt. It then gets stuck trying to regrasp.
+        RankQ also fails the initial stack but quickly reattempts the task, succeeding before timeout.
+      </p>
 
     <section id="bibtex">
       <h2>Citation</h2>
