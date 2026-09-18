@@ -7,6 +7,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>RankQ</title>
   <link rel="icon" type="image/x-icon" href="../../resources/favicon.ico">
+  <link rel="preconnect" href="https://rsms.me/">
+  <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
   <link rel="stylesheet" href="../../style.css">
   <script>
     window.MathJax = {
@@ -19,7 +21,7 @@
   <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <style>
     body {
-      --page-font-family: monospace;
+      --page-font-family: "Inter", system-ui, sans-serif;
       --page-font-size: 16px;
       --page-max-width: 1100px;
       --title-max-width: 950px;
@@ -62,7 +64,8 @@
       text-align: justify;
     }
 
-    .main-figure {
+    .main-figure,
+    .overview-video {
       width: 100%;
       height: auto;
       display: block;
@@ -82,6 +85,68 @@
       margin-left: auto;
       margin-right: auto;
     }
+
+    .pseudocode-block {
+      max-width: 950px;
+      margin: 1.5em auto;
+      background: #fff;
+      border: 1px solid #b9c7d6;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .pseudocode-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1em;
+      padding: 0.65em 1em;
+      background: #e8eef5;
+      font-size: 0.875em;
+    }
+
+    #copy-pseudocode {
+      font: inherit;
+      padding: 0.4em 0.75em;
+      border: 1px solid #b9c7d6;
+      border-radius: 4px;
+      background: #fff;
+      color: #111;
+      cursor: pointer;
+    }
+
+    #copy-pseudocode:hover {
+      background: #f2f2f2;
+    }
+
+    .pseudocode-block pre {
+      margin: 0;
+      padding: 1.25em;
+      overflow-x: auto;
+      font-size: 14px;
+      line-height: 1.6;
+      tab-size: 4;
+    }
+
+    .pseudocode-block code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+
+    #copy-status {
+      margin: 0;
+      padding: 0 1em;
+      font-size: 0.875em;
+    }
+
+    #copy-status:not(:empty) {
+      padding-bottom: 0.75em;
+    }
+
+    .syntax-keyword { color: #008000; }
+    .syntax-function { color: #0000ff; }
+    .syntax-string { color: #ba2121; }
+    .syntax-number { color: #666; }
+    .syntax-comment { color: #408080; font-style: italic; }
 
     .sim2real-table {
       width: 100%;
@@ -128,8 +193,22 @@
     }
 
     .equation-block {
-      margin: 1em 0;
+      margin: 0.35rem 0;
+      padding: 0.2em 0;
       overflow-x: auto;
+      overflow-y: hidden;
+    }
+
+    .equation-block mjx-container[display="true"] {
+      margin: 0 !important;
+    }
+
+    #methodology p:has(+ .equation-block) {
+      margin-bottom: 0.35rem;
+    }
+
+    #methodology .equation-block + p {
+      margin-top: 0.35rem;
     }
 
     .video-comparison-header,
@@ -209,18 +288,26 @@
       </p>
     </section>
 
+    <section id="results-preview">
+      <h2>Results Preview</h2>
+      <video class="overview-video" controls playsinline preload="metadata" aria-label="RankQ results preview">
+        <source src="videos/results_preview.mp4" type="video/mp4">
+        Your browser does not support embedded video. <a href="videos/results_preview.mp4">Download the video</a>.
+      </video>
+    </section>
+
     <section id="abstract">
       <h2>Abstract</h2>
       <p>
         Offline-to-online reinforcement learning (RL) improves sample efficiency by leveraging pre-collected datasets prior to online interaction.
-        A key challenge, however, is learning an accurate critic in large state--action spaces with limited dataset coverage.
+        A key challenge, however, is learning an accurate critic in large state–action spaces with limited dataset coverage.
         To mitigate harmful updates from value overestimation, prior methods impose pessimism by down-weighting out-of-distribution (OOD) actions relative to dataset actions.
         While effective, this essentially acts as a behavior cloning anchor and can hinder downstream online policy improvement when dataset actions are suboptimal.
         We propose RankQ, an offline-to-online Q-learning objective that augments temporal-difference learning with a self-supervised multi-term ranking loss to enforce structured action ordering.
         By learning relative action preferences rather than uniformly penalizing unseen actions, RankQ shapes the Q-function such that action gradients are directed toward higher-quality behaviors.
-        Across sparse reward D4RL benchmarks, RankQ achieves performance competitive with or superior to seven prior methods.
-        In vision-based robot learning, RankQ enables effective offline-to-online fine-tuning of a pretrained vision-language-action (VLA) model in a low-data regime, achieving on average a 42.7% higher simulation success rate than the next best method.
-        In a high-data setting, RankQ improves simulation performance by 13.7% over the next best method and achieves strong sim-to-real transfer, increasing real-world cube stacking success from 43.1% to 88.9% relative to the VLA’s initial performance.
+        Across sparse-reward D4RL benchmarks, RankQ achieves competitive overall performance against seven baselines.
+        In vision-based robot learning, RankQ enables effective offline-to-online fine-tuning of a pretrained vision-language-action (VLA) model in a low-data regime, achieving an average simulation success rate 38.2 percentage points higher than the next best method.
+        In a high-data setting, RankQ improves simulation performance by 13.7 percentage points over the next best method and demonstrates sim-to-real transfer, increasing real-world cube stacking success from 43.1% to 88.9% relative to the VLA’s initial performance.
       </p>
     </section>
 
@@ -232,7 +319,7 @@
         For transitions $(s,a) \sim \mathcal D_{\text{success}}$, we construct several classes of self-supervised suboptimal actions that capture different types of deviations from optimal behavior:
       </p>
       <ul class="methodology-list">
-        <li><strong>Noisy actions:</strong> $a_\epsilon = a + \epsilon$, where $\epsilon \sim \mathcal N(0, \sigma)$, representing actions with small perturbations.</li>
+        <li><strong>Noisy actions:</strong> $a_\epsilon = a + \epsilon$, where $\epsilon \sim \mathcal N(0, \sigma^2)$, representing actions with small perturbations.</li>
         <li><strong>Very noisy actions:</strong> $a_{2\epsilon} = a + 2\epsilon$, representing actions with larger perturbations.</li>
         <li><strong>Random actions:</strong> $a_r \sim \mathcal U(-1,1)^{|a|}$, representing arbitrary actions.</li>
         <li><strong>Permuted actions:</strong> $a_p \sim \mathcal D$, representing actions sampled from unrelated states.</li>
@@ -269,27 +356,78 @@
         but refrain from imposing stronger ordering constraints due to the absence of a meaningful notion of relative quality.
         The full multi-term pairwise ranking loss is formulated in the paper.
       </p>
+      <h3>Pseudocode</h3>
+      <div class="pseudocode-block">
+        <div class="pseudocode-toolbar">
+          <span>Python / PyTorch</span>
+          <button type="button" id="copy-pseudocode" aria-label="Copy RankQ pseudocode">Copy code</button>
+        </div>
+        <pre tabindex="0" aria-label="RankQ algorithm pseudocode"><code id="rankq-pseudocode"><span class="syntax-keyword">import</span> torch
+<span class="syntax-keyword">import</span> torch.nn.functional <span class="syntax-keyword">as</span> F
+
+
+<span class="syntax-keyword">def</span> <span class="syntax-function">compute_rankq_loss</span>(critic: torch.nn.Module, state: torch.Tensor,
+                       rollout_action: torch.Tensor, success_mask: torch.Tensor,
+                       noise_scale: <span class="syntax-keyword">float</span> = <span class="syntax-number">0.15</span>, alpha_0: <span class="syntax-keyword">float</span> = <span class="syntax-number">1.0</span>, alpha_1: <span class="syntax-keyword">float</span> = <span class="syntax-number">1.0</span>):
+
+    bs = rollout_action.shape[<span class="syntax-number">0</span>]
+    success_indices = torch.where(success_mask)[<span class="syntax-number">0</span>]
+    failure_indices = torch.where(~success_mask)[<span class="syntax-number">0</span>]
+    eps = torch.randn_like(rollout_action)
+    perm_indices = torch.roll(torch.arange(bs), shifts=-<span class="syntax-number">1</span>)
+
+    <span class="syntax-comment"># Define all types of actions</span>
+    all_actions = {
+        <span class="syntax-string">"rollout"</span>: rollout_action,
+        <span class="syntax-string">"noisy"</span>: rollout_action + eps * noise_scale,
+        <span class="syntax-string">"very_noisy"</span>: rollout_action + eps * <span class="syntax-number">2</span> * noise_scale,
+        <span class="syntax-string">"permuted"</span>: rollout_action[perm_indices],
+        <span class="syntax-string">"random"</span>: torch.rand_like(rollout_action) * <span class="syntax-number">2</span> - <span class="syntax-number">1</span>,
+    }
+
+    <span class="syntax-comment"># Compute Q-values for all actions</span>
+    q_values = {
+        name: critic(state, action)
+        <span class="syntax-keyword">for</span> name, action <span class="syntax-keyword">in</span> all_actions.items()
+    }
+
+    pairs = [
+        <span class="syntax-comment"># L^fail</span>
+        (<span class="syntax-string">"rollout"</span>, <span class="syntax-string">"random"</span>),
+        <span class="syntax-comment"># L^succ</span>
+        (<span class="syntax-string">"rollout"</span>, <span class="syntax-string">"noisy"</span>), (<span class="syntax-string">"rollout"</span>, <span class="syntax-string">"very_noisy"</span>),
+        (<span class="syntax-string">"rollout"</span>, <span class="syntax-string">"permuted"</span>), (<span class="syntax-string">"rollout"</span>, <span class="syntax-string">"random"</span>),
+        <span class="syntax-comment"># L^chain</span>
+        (<span class="syntax-string">"noisy"</span>, <span class="syntax-string">"very_noisy"</span>), (<span class="syntax-string">"very_noisy"</span>, <span class="syntax-string">"random"</span>)
+    ]
+
+    rankq_loss = torch.zeros(bs)
+    <span class="syntax-keyword">for</span> i, (pos_type, neg_type) <span class="syntax-keyword">in</span> <span class="syntax-keyword">enumerate</span>(pairs):
+        ind = failure_indices <span class="syntax-keyword">if</span> i == <span class="syntax-number">0</span> <span class="syntax-keyword">else</span> success_indices
+        alpha = alpha_1 <span class="syntax-keyword">if</span> i == <span class="syntax-number">0</span> <span class="syntax-keyword">else</span> alpha_0
+
+        q_pos = q_values[pos_type][ind]
+        q_neg = q_values[neg_type][ind]
+
+        rankq_loss[ind] += alpha * F.softplus(q_neg - q_pos)
+
+    <span class="syntax-keyword">return</span> rankq_loss.mean()</code></pre>
+        <p id="copy-status" role="status" aria-live="polite"></p>
+      </div>
     </section>
 
     <section id="results">
-      <h2>D4RL Results</h2>
-      <img class="result-figure" src="figures/d4rl_results.png" alt="D4RL results">
-      <p class="result-caption">Sparse-reward D4RL benchmark results across 3 random seeds. Curves start after offline RL has concluded.</p>
-      <p>
-        RankQ achieves performance competitive with or superior to seven prior methods for the antmaze and adroit environments.
-      </p>
-
-      <h2>VLA RL fine-tuning with low-data regime Results</h2>
+      <h2>VLA RL Fine-tuning in Low-data Regime</h2>
       <img class="result-figure" src="figures/vla-low-data.png" alt="VLA low-data results">
       <p class="result-caption">Low-data VLA RL fine-tuning results across 3 random seeds. Curves start after offline RL has concluded.</p>
       <p>
-        We define the low-data regime as using 200 VLA self-rollouts as the offline dataset together with 8 online rollouts per update.
-        Using this limited data budget, RankQ is the only algorithm that significantly improves the VLA beyond its baseline performance.
+        To simulate a pseudo real-data bottleneck, we define a challenging low-data regime as using 200 VLA self-rollouts as the offline dataset together with only 8 online rollouts per update.
+        Using this limited data budget, RankQ is the only algorithm that consistently and significantly improves the VLA beyond its baseline performance.
         Note that since cube stacking and spoon-into-bowl have only about a 20% initial success rate, roughly 80% of the offline dataset consists of failure trajectories.
-        <strong>RankQ has on average 42% higher success rate compared to the next best method.</strong>
+        <strong>RankQ has on average 38.2% higher success rate compared to the next best non-RankQ method.</strong>
       </p>
 
-      <h2>VLA RL fine-tuning with high-data regime Results</h2>
+      <h2>VLA RL Fine-tuning in High-data Regime</h2>
       <img class="result-figure narrow-result-figure" src="figures/sim2real_results.png" alt="Sim-to-real results">
       <p class="result-caption">High-data VLA RL fine-tuning results across 3 random seeds. Curves start after offline RL has concluded.</p>
       <p>
@@ -379,5 +517,22 @@
   <footer class="site-footer">
     <p class="footer-text"><strong>Horizon Robotics GAIL</strong></p>
   </footer>
+  <script>
+    document.getElementById("copy-pseudocode").addEventListener("click", async () => {
+      const code = document.getElementById("rankq-pseudocode");
+      const status = document.getElementById("copy-status");
+      try {
+        await navigator.clipboard.writeText(code.textContent);
+        status.textContent = "Code copied.";
+      } catch {
+        const range = document.createRange();
+        range.selectNodeContents(code);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        status.textContent = "Code selected. Press Ctrl+C or Command+C to copy.";
+      }
+    });
+  </script>
 </body>
 </html>
