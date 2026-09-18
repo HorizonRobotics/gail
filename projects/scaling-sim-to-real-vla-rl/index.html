@@ -2,11 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="description" content="Scaling Sim-to-Real Reinforcement Learning for Robot VLAs with Generative 3D Worlds">
+  <meta name="description" content="Scaling Sim-to-Real VLA Reinforcement Learning with Generative 3D Worlds">
   <meta name="keywords" content="Sim-to-Real, Reinforcement Learning, Robot VLAs, Generative 3D Worlds, Robotics">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Scaling Sim-to-Real RL for Robot VLAs</title>
+  <title>Scaling Sim-to-Real VLA RL</title>
   <link rel="icon" type="image/x-icon" href="../../resources/favicon.ico">
+  <link rel="preconnect" href="https://rsms.me/">
+  <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
   <link rel="stylesheet" href="../../style.css">
   <script>
     window.MathJax = {
@@ -19,7 +21,7 @@
   <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <style>
     body {
-      --page-font-family: monospace;
+      --page-font-family: "Inter", system-ui, sans-serif;
       --page-font-size: 16px;
       --page-max-width: 1100px;
       --title-max-width: 950px;
@@ -34,6 +36,10 @@
       width: min(var(--title-max-width), 100%);
       margin-bottom: 0.5em;
       border-bottom: 0;
+    }
+
+    header h1 {
+      margin-bottom: 0.25em;
     }
 
     main {
@@ -53,6 +59,13 @@
 
     .paper-meta p {
       margin: 0.5em 0;
+    }
+
+    .conference {
+      font-size: 18px;
+      font-weight: 400;
+      color: #59595f;
+      margin: 0 0 0.85rem;
     }
 
     #front-page {
@@ -80,7 +93,8 @@
       display: block;
     }
 
-    .training-example {
+    .training-example,
+    .overview-video {
       width: 100%;
       height: auto;
       display: block;
@@ -93,6 +107,22 @@
       display: block;
       margin: 1.5em 0;
       border-radius: 14px;
+    }
+
+    .simulation-results-columns {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 2em;
+      align-items: center;
+    }
+
+    .simulation-results-columns p,
+    .simulation-results-columns .result-figure {
+      margin: 0;
+    }
+
+    .simulation-results-columns p {
+      text-align: justify;
     }
 
     .video-comparison-header,
@@ -136,7 +166,8 @@
         display: none;
       }
 
-      .video-comparison-row {
+      .video-comparison-row,
+      .simulation-results-columns {
         grid-template-columns: 1fr;
       }
     }
@@ -144,15 +175,16 @@
 </head>
 <body>
   <header>
-    <h1>Scaling Sim-to-Real Reinforcement Learning <br> for Robot VLAs with Generative 3D Worlds</h1>
+    <h1>Scaling Sim-to-Real VLA Reinforcement <br> Learning with Generative 3D Worlds</h1>
+    <p class="conference">Conference on Robot Learning (CoRL) 2026</p>
   </header>
 
   <main>
     <section class="paper-meta">
       <p>
-        <strong>Andrew Choi<sup>1</sup>, Xinjie Wang<sup>1</sup>, Zhizhong Su<sup>1</sup>, and Wei Xu<sup>1,&dagger;</sup></strong> <br>
+        <strong>Andrew Choi, Xinjie Wang, Zhizhong Su, and Wei Xu<sup>&dagger;</sup></strong> <br>
         <code>{firstname.lastname}@horizon.auto</code> <br>
-        <sup>1</sup>Horizon Robotics <sup>&dagger;</sup>Corresponding author
+        Horizon Robotics <sup>&dagger;</sup>Corresponding author
       </p>
       <p>
         <a href="https://arxiv.org/abs/2603.18532" target="_blank" rel="noopener noreferrer">arXiv</a>
@@ -165,6 +197,14 @@
       <img class="front-page-figure" src="figures/front_page.png" alt="Front page visualization">
     </section>
 
+    <section id="video-overview">
+      <h2>Results Preview</h2>
+      <video class="overview-video" controls playsinline preload="metadata" aria-label="Scaling Sim-to-Real VLA Reinforcement Learning video overview">
+        <source src="videos/results_preview.mp4" type="video/mp4">
+        Your browser does not support embedded video. <a href="videos/scalable_rl_submission_video.mp4">Download the video</a>.
+      </video>
+    </section>
+
     <section id="abstract">
       <h2>Abstract</h2>
       <p>
@@ -173,11 +213,12 @@
       While real-world RL circumvents sim-to-real issues, it inherently limits the generality of the resulting VLA, as scaling scene and object diversity in the physical world is prohibitively difficult.
       This leads to the paradoxical outcome of transforming a broadly pretrained model into an overfitted, scene-specific policy.
       Training in simulation can instead provide access to diverse scenes, but designing those scenes is also costly.
-      In this work, we show that VLAs can be RL fine-tuned without sacrificing generality and with reduced labor by leveraging 3D world generative models.
-      Using these models together with a language-driven scene designer, we generate hundreds of diverse interactive scenes containing unique objects and backgrounds, enabling scalable and highly parallel policy learning.
-      Starting from a pretrained imitation baseline, our approach increases simulation success from 9.7% to 79.8% while achieving a 1.25x speedup in task completion time.
-      We further demonstrate successful sim-to-real transfer enabled by the quality of the generated scenes together with domain randomization, improving real-world success from 21.7% to 75% and achieving a 1.13x speedup.
-      Finally, we further highlight the benefits of leveraging the effectively unlimited data from 3D world generative models through an ablation study showing that increasing scene diversity directly improves zero-shot generalization.      </p>
+      In this work, we show that VLAs can be RL fine-tuned across broad scene and object distributions and with reduced labor by leveraging 3D world generative models.
+      Using these models together with a language-driven scene designer, we generate 100 diverse interactive scenes containing unique objects and backgrounds, enabling scalable and highly parallel policy learning.
+      Starting from a pretrained imitation baseline, our approach increases simulation success from 9.7% up to 79.8% while achieving a 1.25× speedup in task completion time.
+      We further demonstrate successful sim-to-real transfer enabled by the quality of the generated scenes together with domain randomization, improving real-world success from 21.7% to 75% and achieving a 1.13× speedup.
+      Finally, we further highlight the benefits of leveraging the effectively unlimited data from 3D world generative models through an ablation study showing that increasing scene diversity directly improves zero-shot generalization.
+      </p>
     </section>
 
     <section id="rl-training-example">
@@ -190,14 +231,19 @@
     </section>
 
     <section id="results">
-      <h2>Results</h2>
-      <p>
-        Increasing the number of training scenes $N$ improves zero-shot performance on out-of-distribution (OOD) scenes.
-        RL fine-tuning on only a single scene achieves high in-domain (ID) success, but zero-shot performance suffers.
-        Our results strongly indicate that scene diversity during RL fine-tuning is crucial for maintaining strong zero-shot performance on novel scenes.
-      </p>
+      <h2>Simulation Results</h2>
+      <div class="simulation-results-columns">
+        <p>
+          Increasing the number of training scenes $N$ improves zero-shot performance on out-of-distribution (OOD) scenes.
+          Scaling from 1 to 50 generated training scenes raises success on held-out EmbodiedGen scenes from 53.2% to 77.9%, a 24.7-percentage-point improvement.
+          Over the same range, in-distribution success decreases from 94.3% to 80.5%, narrowing the generalization gap from 41.1 to 2.6 percentage points.
+          Generalization also improves on SimplerEnv, Google Scanned Objects, and Hunyuan3D-2.1 scenes, showing benefits beyond the training asset source.
+          The largest OOD gains occur by approximately 25–50 scenes; later saturation may partly reflect reduced sampling per scene under the fixed compute budget.
+          Overall, policies trained on 50–100 generated scenes achieve approximately 79% success across the full 100-scene set, compared with 9.7% for the imitation baseline.
+        </p>
+        <img class="result-figure" src="figures/scene_scaling.png" alt="Scene scaling results">
+      </div>
       <img class="result-figure" src="figures/sim_results_table.png" alt="Simulation results table">
-      <img class="result-figure" src="figures/scene_scaling.png" alt="Scene scaling results">
     </section>
 
     <section id="sim-to-real-examples">
@@ -262,8 +308,8 @@
     <section id="bibtex">
       <h2>Citation</h2>
       If our work has proved useful, please consider citing our work:
-      <pre><code>@misc{choi2026scalingsimtorealreinforcementlearning,
-      title={Scaling Sim-to-Real Reinforcement Learning for Robot VLAs with Generative 3D Worlds}, 
+      <pre><code>@misc{choi2026scalingsimtorealvlareinforcementlearning,
+      title={Scaling Sim-to-Real VLA Reinforcement Learning with Generative 3D Worlds},
       author={Andrew Choi and Xinjie Wang and Zhizhong Su and Wei Xu},
       year={2026},
       eprint={2603.18532},
