@@ -1,22 +1,484 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
+  <meta name="description" content="SLIM">
+  <meta name="keywords" content="Mobile Manipulation, Reinforcement Learning">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Redirecting to SLIM</title>
-  <link rel="canonical" href="https://horizonrobotics.github.io/gail/projects/SLIM/">
-  <meta http-equiv="refresh" content="0; url=../projects/SLIM/">
-  <script>
-    const target = new URL("../projects/SLIM/", window.location.href);
-    target.hash = window.location.hash;
-    target.search = window.location.search;
-    window.location.replace(target);
-  </script>
+  <title>SLIM</title>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
+
+
 <body>
-  <p>
-    Redirecting to the SLIM project page.
-    <a href="../projects/SLIM/">Continue if you are not redirected automatically.</a>
-  </p>
+<section class="title">
+  <div class="title-body">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+         <center>
+          <p>
+          <h1 class="title is-1 publication-title">Learning Multi-Stage Pick-and-Place</h1>
+          </p>
+          <p>
+            <h1 class="title is-1 publication-title">with a Legged Mobile Manipulator</h1>
+            </p>
+         </center>
+          <div class="is-size-4 publication-authors">
+            <span class="author-block">
+            <center>
+            <p>
+                <a>Haichao Zhang, Haonan Yu, Le Zhao, Andrew Choi, Qinxun Bai, Yiqing Yang, Wei Xu</a>
+            </p>
+            <p>
+                <a>Horizon Robotics</a>
+            </p>
+            </center>
+            </span>
+          </div>
+
+
+      </div>
+    </div>
+  </div>
+
+
+  <section class="section">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <h3 class="title is-2" style="text-align: center; padding-top: 20px; padding-bottom: 20px;">
+            Demo Introduction
+          </h3>
+          <ul style="font-size: 1.2em; text-align: left; padding-left: 40px; list-style-position: inside; padding-bottom: 30px;">
+            <li style="padding-left: 80px;">Demo videos below were captured when the same SLIM policy was deployed in diverse real-world scenes.</li>
+            <li style="padding-left: 80px;">During the task execution, the robot was fully autonomous without any human teleoperation.</li>
+            <li style="padding-left: 80px;">All videos were captured and are played back in real-time without playback speedup.</li>
+            <li style="padding-left: 80px; text-indent: -30px; margin-left: 30px;">An annotation in the form of <i>"red cube → blue basket"</i> is used to highlight the target object and target basket in the task, without repeating the full language instruction like <i>"drop the red cube into the blue basket".</i></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <nav class="outline">
+    <h3 class="title is-4" style="text-align: center; padding-bottom: 10px;">Demo Overview</h3>
+  </nav>
+
+
+<!-- Top Row: Navigation and Video -->
+<div class="two-columns-container">
+
+  <!-- Left Column: Navigation -->
+  <div class="left-column">
+    <ul class="nav-list">
+      <li><a href="#indoor-kitchen"><b>Indoor:</b> Kitchen</a></li>
+      <li><a href="#indoor-lobby"><b>Indoor:</b> Lobby</a></li>
+      <li><a href="#indoor-carpet"><b>Indoor:</b> Carpet Room</a></li>
+      <li><a href="#outdoor-lawn"><b>Outdoor:</b> Lawn</a></li>
+      <li><a href="#outdoor-mulch"><b>Outdoor:</b> Mulch</a></li>
+      <li><a href="#outdoor-concrete"><b>Outdoor:</b> Concrete</a></li>
+      <li><a href="#visual-distractors"><b>Generalizations:</b> Random Spatial Layout</a></li>
+      <li><a href="#visual-distractors"><b>Generalizations:</b> Visual Distractors</a></li>
+      <li><a href="#more-on-generalizations"><b>Emergent Behaviors:</b> Novel Object</a></li>
+      <li><a href="#more-on-generalizations"><b>Emergent Behaviors:</b> Re-Grasping</a></li>
+      <li><a href="#more-on-generalizations"><b>Emergent Behaviors:</b> Task Chaining</a></li>
+    </ul>
+  </div>
+
+  <!-- Right Column: Video -->
+  <div class="right-column">
+    <video autoplay muted loop playsinline controls preload="auto" src="./demo_videos/0_demo_matrix.mp4"></video>
+  </div>
+
+</div>
+
+
+<!-- Responsive Media Queries -->
+<style>
+  .two-columns-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    gap: 0px;
+    margin: 0 auto;
+    padding: 0 20px;
+    max-width: 1400px;
+  }
+
+  .left-column {
+    width: 380px;
+    margin-left: auto;
+  }
+
+  .nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .nav-list li {
+    margin-bottom: 10px;
+  }
+
+  .nav-list a {
+    display: inline-block;
+    text-decoration: none;
+    font-weight: bold;
+    color: #007bff;
+  }
+
+  .right-column {
+    width: 580px;
+    display: flex;
+    justify-content: center;
+    align-items: left;
+    margin-top: 35px;
+  }
+
+  .right-column video {
+    width: 100%;
+    max-width: 530px;
+    border-radius: 10px;
+  }
+
+  @media (max-width: 1024px) {
+    .two-columns-container {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .left-column, .right-column {
+      width: 90%;
+    }
+
+    .right-column video {
+      width: 95%;
+    }
+  }
+
+  @media (min-width: 1440px) {
+    .two-columns-container {
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+    }
+  }
+
+</style>
+
+
+  <section class="section" id="indoor-kitchen">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-2" style="text-align: center; padding-bottom: 10px; padding-top: 70px">Indoor: Kitchen</h2>
+            <td>
+              <div class="row">
+                <div class="col">
+                  <video autoplay muted loop playsinline controls preload="auto" src="./demo_videos/kitchen_1.mp4" width="100%"
+                         style="border-radius:10px; "></video>
+                  <p style="margin-top: 5px; text-align: center; font-style: italic;">yellow cube → blue basket</p>
+                </div>
+                <div class="col">
+                  <video autoplay muted loop playsinline controls preload="auto" src="./demo_videos/kitchen_2.mp4" width="100%"
+                         style="border-radius:10px; "></video>
+                  <p style="margin-top: 5px; text-align: center; font-style: italic;">blue cube → red basket</p>
+              </div>
+              </div>
+              <br>
+            </td>
+          </tr>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+</code></pre>
+  </div>
+</section>
+
+
+
+<section class="section" id="indoor-lobby">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-2" style="text-align: center; padding-bottom: 10px; padding-top: 70px">Indoor: Lobby</h2>
+          <br>
+            <td>
+              <div class="row">
+                <div class="col">
+                    <video autoplay muted loop playsinline controls preload="auto" src="./demo_videos/lobby_1.mp4" width="100%"
+                           style="border-radius:10px; "></video>
+                    <p style="margin-top: 5px; text-align: center; font-style: italic;">red cube → blue basket</p>
+                </div>
+                <div class="col">
+                  <video autoplay muted loop playsinline controls preload="auto" src="./demo_videos/lobby_2.mp4" width="100%"
+                         style="border-radius:10px; "></video>
+                  <p style="margin-top: 5px; text-align: center; font-style: italic;">yellow cube → red basket</p>
+                        </div>
+              </div>
+              </div>
+              <br>
+            </td>
+          </tr>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="section" id="indoor-carpet">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-2" style="text-align: center; padding-bottom: 10px; padding-top: 70px">Indoor: Carpet Room</h2>
+          <br>
+            <td>
+              <div class="row">
+                <div class="col">
+                  <video autoplay muted loop playsinline controls preload="auto" src="./demo_videos/carpet_1.mp4" width="100%"
+                         style="border-radius:10px; "></video>
+                    <p style="margin-top: 5px; text-align: center; font-style: italic;">blue cube → blue basket</p>
+                </div>
+                <div class="col">
+                    <video autoplay muted loop playsinline controls preload="auto" src="./demo_videos/carpet_2.mp4" width="100%"
+                           style="border-radius:10px; "></video>
+                    <p style="margin-top: 5px; text-align: center; font-style: italic;">green cube → red basket</p>
+                </div>
+              </div>
+              <br>
+            </td>
+          </tr>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+
+  <section class="section" id="outdoor-lawn">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-2" style="text-align: center; padding-bottom: 10px; padding-top: 70px">Outdoor: Lawn</h2>
+          <br>
+            <td>
+              <div class="row">
+                <div class="col">
+                  <video autoplay muted loop playsinline controls preload="auto" src="./demo_videos/lawn_1.mp4" width="100%"
+                         style="border-radius:10px; "></video>
+                  <p style="margin-top: 5px; text-align: center; font-style: italic;">red cube → blue basket</p>
+                </div>
+                <div class="col">
+                    <video autoplay muted loop playsinline controls preload="auto" src="./demo_videos/lawn_2.mp4" width="100%"
+                           style="border-radius:10px; "></video>
+                    <p style="margin-top: 5px; text-align: center; font-style: italic;">red cube → blue basket</p>
+                </div>
+              </div>
+              <br>
+            </td>
+          </tr>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+
+
+<section class="section" id="outdoor-mulch">
+<div class="container">
+  <div class="columns is-centered">
+    <div class="column is-full-width">
+      <h2 class="title is-2" style="text-align: center; padding-bottom: 10px; padding-top: 70px">Outdoor: Mulch</h2>
+      <br>
+        <td>
+          <div class="row">
+            <div class="col">
+                <video autoplay muted loop playsinline controls preload="auto" src="./demo_videos/mulch_1.mp4" width="100%"
+                       style="border-radius:10px; "></video>
+                <p style="margin-top: 5px; text-align: center; font-style: italic;">red cube → red basket</p>
+            </div>
+            <div class="col">
+              <video autoplay muted loop playsinline controls preload="auto" src="./demo_videos/mulch_2.mp4" width="100%"
+                     style="border-radius:10px; "></video>
+               <p style="margin-top: 5px; text-align: center; font-style: italic;">yellow cube → blue basket</p>
+          </div>
+          </div>
+          <br>
+        </td>
+      </tr>
+    </div>
+  </div>
+</div>
+</section>
+
+
+
+<section class="section" id="outdoor-concrete">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-2" style="text-align: center; padding-bottom: 10px; padding-top: 70px">Outdoor: Concrete</h2>
+        <br>
+          <td>
+            <div class="row">
+              <div class="col">
+                  <video autoplay muted loop playsinline controls preload="auto" src="./demo_videos/concrete_1.mp4" width="100%"
+                         style="border-radius:10px; "></video>
+                  <p style="margin-top: 5px; text-align: center; font-style: italic;">yellow cube → red basket</p>
+              </div>
+              <div class="col">
+                <video autoplay muted loop playsinline controls preload="auto" src="./demo_videos/concrete_2.mp4" width="100%"
+                       style="border-radius:10px; "></video>
+                <p style="margin-top: 5px; text-align: center; font-style: italic;">blue cube → red basket</p>
+            </div>
+            </div>
+            <br>
+          </td>
+        </tr>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<section class="section" id="visual-distractors">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-2" style="text-align: center; padding-bottom: 10px; padding-top: 70px">Generalizations</h2>
+          <h3 style="text-align: center; padding-bottom: 10px;">Random Spatial Layout with Visual Distractors</h3>
+            <td>
+              <div class="row">
+                <div class="col">
+                    <video autoplay muted loop playsinline controls preload="auto" src="./demo_videos/lobby_distractors.mp4" width="100%"
+                           style="border-radius:10px; "></video>
+                    <p style="margin-top: 5px; text-align: center; font-style: italic;">blue cube → red basket</p>
+                </div>
+                <div class="col">
+                  <video autoplay muted loop playsinline controls preload="auto" src="./demo_videos/concrete_distractors.mp4" width="100%"
+                         style="border-radius:10px; "></video>
+                    <p style="margin-top: 5px; text-align: center; font-style: italic;">yellow cube → red basket</p>
+                </div>
+              </div>
+              <br>
+            </td>
+          </tr>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="section" id="more-on-generalizations">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-2" style="text-align: center; padding-bottom: 0px; padding-top: 70px">Emergent Behaviors</h2>
+          <br>
+            <td>
+              <div class="row">
+                <div class="col">
+                  <h3 style="text-align: center; padding-bottom: 10px;">Novel Object</h3>
+                  <video autoplay muted loop playsinline controls preload="auto" src="./demo_videos/novel_object.mp4" width="100%"
+                         style="border-radius:10px; "></video>
+                  <p style="margin-top: 5px; text-align: left;"><b>behavior description</b>: the policy can grasp an object with a novel shape that is out of the training distribution.</p>
+                </div>
+                <div class="col">
+                   <h3 style="text-align: center; padding-bottom: 10px;">Re-Grasping</h3>
+                    <video autoplay muted loop playsinline controls preload="auto" src="./demo_videos/regrasp.mp4" width="100%"
+                           style="border-radius:10px; "></video>
+                    <p style="margin-top: 5px; text-align: left;"><b>behavior description</b>: the policy can re-grasp the target cube when a human interrupts the task progress by
+                    removing the cube from the gripper and tossing it to the ground.</p>
+                </div>
+                <div class="col">
+                  <h3 style="text-align: center; padding-bottom: 10px;">Task Chaining</h3>
+                  <video autoplay muted loop playsinline controls preload="auto" src="./demo_videos/task_chaining.mp4" width="100%"
+                         style="border-radius:10px; "></video>
+                  <p style="margin-top: 5px; text-align: left;"><b>behavior description</b>: the policy can execute the full task three times consecutively without stopping. Each time a target cube (red cube) is dropped into the basket, another target cube is tossed onto the ground. The policy will execute another full task starting from that state. </p>
+                </div>
+              </div>
+              <br>
+            </td>
+          </tr>
+        </div>
+      </div>
+    </div>
+  </section>
+
+    <section class="section" id="bibtex">
+    <div class="container">
+        <div class="columns is-centered">
+        <div class="column is-full-width">
+            <h2 class="title is-2" style="text-align: center; padding-bottom: 10px; padding-top: 70px">
+            BibTeX
+            </h2>
+
+            <pre style="background:#f5f5f5; border:1px solid #ccc; padding:15px; overflow-x:auto; text-align:left; margin:auto; max-width:800px;">
+              <code>@article{slim,
+              title   = {Learning Multi-Stage Pick-and-Place with a Legged Mobile Manipulator},
+              author  = {Haichao Zhang and Haonan Yu and Le Zhao and Andrew Choi and Qinxun Bai and Yiqing Yang and Wei Xu},
+              journal = {IEEE Robotics and Automation Letters (RA-L)},
+              year    = {2025}
+              }</code>
+            </pre>
+        </div>
+        </div>
+    </div>
+
+        <div class="columns is-centered">
+        <div class="column is-full-width">
+            <pre style="background:#f5f5f5; border:1px solid #ccc; padding:15px; overflow-x:auto; text-align:left; margin:auto; max-width:800px;">
+              <code>@article{slim_tech_report,
+              title   = {{SLIM}: Sim-to-Real Legged Instructive Manipulation via Long-Horizon Visuomotor Learning},
+              author  = {Haichao Zhang and Haonan Yu and Le Zhao and Andrew Choi and Qinxun Bai and Yiqing Yang and Wei Xu},
+              eprint  = {2501.09905},
+              url     = {https://arxiv.org/abs/2501.09905},
+              year    = {2025}
+              }</code>
+            </pre>
+        </div>
+        </div>
+    </section>
+
+  <section class="section" style="margin-bottom: 200px;">
+  </section>
+
 </body>
+
+<script>
+  var mainLoopId = setInterval(function () {
+    $('video').not('#teaser').each(function () {
+      var video = $(this)[0];
+      if ($(this).is(":in-viewport")) {
+        if (video.paused) video.play();
+      } else {
+        if (!video.paused) video.pause();
+      }
+    });
+  }, 1000);
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll("video").forEach(video => {
+      const parent = video.parentNode;
+      const newVideo = video.cloneNode(true);
+      parent.replaceChild(newVideo, video);
+    });
+  });
+</script>
+
 </html>
