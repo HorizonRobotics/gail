@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="description" content="RankQ">
+  <meta name="description" content="RankQ: Offline-to-Online Reinforcement Learning via Self-Supervised Action Ranking">
   <meta name="keywords" content="RankQ, Reinforcement Learning, Robotics">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>RankQ</title>
@@ -10,6 +10,8 @@
   <link rel="preconnect" href="https://rsms.me/">
   <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
   <link rel="stylesheet" href="../style.css">
+  <script src="videos.js" defer></script>
+  <script src="overview.js" defer></script>
   <script>
     window.MathJax = {
       tex: {
@@ -25,7 +27,8 @@
       --page-font-size: 16px;
       --page-max-width: 1100px;
       --title-max-width: 950px;
-      --page-background: #f2f2f2;
+      --page-background: #f7f8fa;
+      margin: 2rem clamp(1rem, 4vw, 2rem);
       background: var(--page-background);
       color: #111;
       font-family: var(--page-font-family);
@@ -38,13 +41,27 @@
       border-bottom: 0;
     }
 
+    header h1 {
+      margin-bottom: 0.25em;
+      font-size: clamp(1.75rem, 3vw, 2.25rem);
+      line-height: 1.25;
+    }
+
     main {
+      box-sizing: border-box;
       max-width: var(--page-max-width);
+      padding: 0;
+      margin: 0 auto;
     }
 
     section {
       margin-top: 2.5em;
       margin-bottom: 2.5em;
+    }
+
+    main section > h2 {
+      border-bottom: 1px solid #b8c1ce;
+      padding-bottom: 0.6rem;
     }
 
     .paper-meta {
@@ -57,19 +74,188 @@
       margin: 0.5em 0;
     }
 
-    #abstract p {
-      max-width: 1050px;
-      margin-left: auto;
-      margin-right: auto;
-      text-align: justify;
+    .paper-links {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      margin-top: 1.25rem;
     }
 
-    .main-figure,
-    .overview-video {
+    .paper-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.55rem 1.2rem;
+      border-radius: 999px;
+      background: #24282e;
+      color: #fff;
+      font: inherit;
+      font-weight: 700;
+      transition: background 150ms ease;
+    }
+
+    .paper-link:hover {
+      background: #145aa0;
+      text-decoration: none;
+    }
+
+    .paper-link svg {
+      width: 1.1rem;
+      height: 1.1rem;
+    }
+
+    a:focus-visible,
+    button:focus-visible {
+      outline: 3px solid #145aa0;
+      outline-offset: 4px;
+    }
+
+    .scene-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .scene-restart {
+      border: 1px solid #c9d1db;
+      border-radius: 999px;
+      padding: 0.15rem 0.85rem;
+      background: #fff;
+      color: #334155;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .scene-restart:hover {
+      border-color: #145aa0;
+      color: #145aa0;
+    }
+
+    #main-figure {
+      margin-top: 1em;
+    }
+
+    #contributions h2 {
+      margin-bottom: 0.5rem;
+    }
+
+    .contributions-intro {
+      margin-top: 0;
+    }
+
+    .contributions-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1rem;
+      padding: 0;
+      margin: 1.5rem 0 0;
+      list-style: none;
+    }
+
+    .contributions-grid li {
+      padding: 1.25rem 1rem;
+      background: #fff;
+      border: 1px solid #dfe4eb;
+      border-top: 3px solid #008638;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .contribution-metric {
+      margin: 0 0 0.5rem;
+      color: #008638;
+      font-size: 1.75em;
+      font-weight: 700;
+      line-height: 1.3;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .contributions-grid h3 {
+      margin: 0 0 0.5rem;
+      font-size: 1em;
+    }
+
+    .contribution-context {
+      margin: 0;
+    }
+
+    @media (max-width: 1100px) {
+      .contributions-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 480px) {
+      .contributions-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    #bibtex pre {
+      background: #e8eef5;
+      border: 1px solid #b9c7d6;
+      border-radius: 6px;
+      padding: 1em;
+      overflow-x: auto;
+    }
+
+    .overview-expand {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      color: #111;
+      cursor: zoom-in;
+    }
+
+    .overview-dialog {
+      box-sizing: border-box;
+      width: min(1600px, calc(100vw - 2rem));
+      max-width: none;
+      max-height: calc(100dvh - 2rem);
+      padding: 1rem;
+      border: 0;
+      border-radius: 12px;
+      background: #fff;
+      color: #111;
+      font: inherit;
+    }
+
+    .overview-dialog::backdrop {
+      background: rgb(0 0 0 / 80%);
+    }
+
+    .overview-dialog-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .overview-close {
+      padding: 0.25rem 0.75rem;
+      border: 1px solid #c9d1db;
+      border-radius: 999px;
+      background: #fff;
+      color: #111;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .overview-dialog img {
+      display: block;
       width: 100%;
       height: auto;
-      display: block;
-      border-radius: 14px;
+      max-height: calc(100dvh - 8rem);
+      object-fit: contain;
+    }
+
+    body.overview-open {
+      overflow: hidden;
     }
 
     .result-figure {
@@ -80,6 +266,114 @@
       border-radius: 14px;
     }
 
+    .scene-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem 1.5rem;
+      align-items: start;
+    }
+
+    .scene-card {
+      min-width: 0;
+      padding: 0.65rem 1rem;
+      line-height: 1.45;
+      background: #fff;
+      border: 0;
+      border-bottom: 1px solid #ceccdf;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .scene-card h3 {
+      margin: 0;
+      font-size: 1em;
+      font-weight: 700;
+    }
+
+    .scene-videos {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.65rem;
+    }
+
+    .scene-videos figure {
+      min-width: 0;
+      margin: 0;
+    }
+
+    .scene-videos figcaption {
+      margin-bottom: 0.2rem;
+      font: inherit;
+    }
+
+    .success-rate {
+      display: inline-block;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 480px) {
+      .success-rate {
+        display: block;
+      }
+    }
+
+    .scene-video {
+      position: relative;
+    }
+
+    .playback-speed,
+    .video-note {
+      position: absolute;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      background: rgb(0 0 0 / 55%);
+      color: #fff;
+      font: inherit;
+      font-size: 0.875em;
+      pointer-events: none;
+    }
+
+    .playback-speed {
+      top: 0.5rem;
+      right: 0.5rem;
+      white-space: nowrap;
+    }
+
+    .video-note {
+      bottom: 0.5rem;
+      left: 0.5rem;
+      right: 0.5rem;
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    .scene-videos .rl-label {
+      color: #145aa0;
+    }
+
+    .scene-videos video {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 4 / 3;
+      display: block;
+      border-radius: 8px;
+      background: #e8eef5;
+    }
+
+    .scene-task {
+      margin: 0.5rem 0 0.2rem;
+      font: inherit;
+    }
+
+    @media (max-width: 768px) {
+      .scene-grid {
+        grid-template-columns: 1fr;
+      }
+
+      header h1 {
+        font-size: clamp(1.75rem, 5vw, 2rem);
+      }
+    }
     .narrow-result-figure {
       width: 80%;
       margin-left: auto;
@@ -102,7 +396,7 @@
       gap: 1em;
       padding: 0.65em 1em;
       background: #e8eef5;
-      font-size: 0.875em;
+      font-size: 1em;
     }
 
     #copy-pseudocode {
@@ -135,7 +429,7 @@
     #copy-status {
       margin: 0;
       padding: 0 1em;
-      font-size: 0.875em;
+      font-size: 1em;
     }
 
     #copy-status:not(:empty) {
@@ -148,30 +442,13 @@
     .syntax-number { color: #666; }
     .syntax-comment { color: #408080; font-style: italic; }
 
-    .sim2real-table {
-      width: 100%;
-      margin: 0;
-    }
-
-    .sim2real-summary {
-      display: grid;
-      grid-template-columns: minmax(0, 60%) minmax(0, 40%);
-      gap: 2em;
-      align-items: center;
-      margin: 1.5em 0;
-    }
-
-    .sim2real-summary p {
-      margin: 0;
-    }
-
     .result-caption {
       max-width: 1200px;
       margin-top: -0.75em;
       margin-left: auto;
       margin-right: auto;
       text-align: center;
-      font-size: 0.95em;
+      font-size: 1em;
     }
 
     .main-figure-caption {
@@ -201,6 +478,7 @@
 
     .equation-block mjx-container[display="true"] {
       margin: 0 !important;
+      min-width: max-content;
     }
 
     #methodology p:has(+ .equation-block) {
@@ -211,25 +489,20 @@
       margin-top: 0.35rem;
     }
 
-    .video-comparison-header,
-    .video-comparison-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1em;
+
+    .main-figure {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 14px;
     }
 
-    .video-comparison-header {
-      font-size: 1.2em;
-      font-weight: bold;
-      text-align: center;
-      margin-bottom: 1em;
+    .scene-description {
+      margin: 0.4rem 0 0;
+      font: inherit;
     }
 
-    .video-comparison-row {
-      margin-bottom: 1em;
-    }
-
-    .video-comparison-row video {
+    .training-example {
       width: 100%;
       height: auto;
       display: block;
@@ -237,26 +510,14 @@
     }
 
     @media (max-width: 768px) {
-      .sim2real-summary {
-        grid-template-columns: 1fr;
-        gap: 1em;
+      .narrow-result-figure {
+        width: 100%;
       }
 
-      .video-comparison-header {
-        display: none;
+      .main-figure-caption,
+      #methodology p {
+        text-align: left;
       }
-
-      .video-comparison-row {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    #bibtex pre {
-      background: #e8eef5;
-      border: 1px solid #b9c7d6;
-      border-radius: 6px;
-      padding: 1em;
-      overflow-x: auto;
     }
   </style>
 </head>
@@ -272,15 +533,22 @@
         <code>{firstname.lastname}@horizon.auto</code><br>
         Horizon Robotics <sup>&dagger;</sup>Corresponding author
       </p>
-      <p>
-        <a href="https://arxiv.org/abs/2605.11151" target="_blank" rel="noopener noreferrer">arXiv</a>
-        |
-        <a href="https://arxiv.org/pdf/2605.11151" target="_blank" rel="noopener noreferrer">PDF</a>
-      </p>
+      <nav class="paper-links" aria-label="Paper resources">
+        <a class="paper-link" href="https://arxiv.org/pdf/2605.11151" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h6"/></svg>
+          PDF
+        </a>
+        <a class="paper-link" href="https://arxiv.org/abs/2605.11151" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m5 3 14 18M5 21l5-7m4-4 5-7"/></svg>
+          arXiv
+        </a>
+      </nav>
     </section>
 
     <section id="main-figure">
-      <img class="main-figure" src="figures/toy_example.png" alt="RankQ toy example">
+      <a class="overview-expand" href="figures/toy_example.png" aria-label="Enlarge RankQ Q-landscape overview" aria-haspopup="dialog" aria-controls="overview-dialog">
+        <img class="main-figure" src="figures/toy_example.png" alt="RankQ toy example">
+      </a>
       <p class="result-caption main-figure-caption">
         Toy example visualizing the Q-landscape for a fixed state $s$ and 2D action space $(a_0, a_1) \in \mathcal A$ under different critic objectives after offline training.
         The first row shows the 3D Q-manifold; the second row shows a 2D projection with eight sampled actions and their gradient ascent trajectories; and the third row shows $\partial Q/\partial a$ magnitudes.
@@ -288,27 +556,249 @@
       </p>
     </section>
 
-    <section id="results-preview">
-      <h2>Results Preview</h2>
-      <video class="overview-video" controls playsinline preload="metadata" aria-label="RankQ results preview">
-        <source src="videos/results_preview.mp4" type="video/mp4">
-        Your browser does not support embedded video. <a href="videos/results_preview.mp4">Download the video</a>.
-      </video>
+    <section id="contributions" aria-labelledby="contributions-heading">
+      <h2 id="contributions-heading">Contributions</h2>
+      <p class="contributions-intro">
+        RankQ shapes the Q-function with self-supervised action ranking to improve offline-to-online policy learning.
+      </p>
+      <ul class="contributions-grid">
+        <li>
+          <p class="contribution-metric">+38.2 pp</p>
+          <h3>Low-data success</h3>
+          <p class="contribution-context">Average success-rate gain over the next best method across three VLA tasks.</p>
+        </li>
+        <li>
+          <p class="contribution-metric">+13.7 pp</p>
+          <h3>High-data success</h3>
+          <p class="contribution-context">Success-rate gain over the next best method with domain randomization.</p>
+        </li>
+        <li>
+          <p class="contribution-metric">43.1% → 88.9%</p>
+          <h3>Real-world success</h3>
+          <p class="contribution-context">Cube stacking, from the initial VLA to RankQ (0.4), evaluated over 288 experiments.</p>
+        </li>
+        <li>
+          <p class="contribution-metric">40%</p>
+          <h3>Online training budget</h3>
+          <p class="contribution-context">RankQ (0.4) transfers successfully with 40% of the online training used by Cal-QL.</p>
+        </li>
+      </ul>
     </section>
 
-    <section id="abstract">
-      <h2>Abstract</h2>
+    <section id="simulation-examples">
+      <h2>Simulation Examples</h2>
       <p>
-        Offline-to-online reinforcement learning (RL) improves sample efficiency by leveraging pre-collected datasets prior to online interaction.
-        A key challenge, however, is learning an accurate critic in large state–action spaces with limited dataset coverage.
-        To mitigate harmful updates from value overestimation, prior methods impose pessimism by down-weighting out-of-distribution (OOD) actions relative to dataset actions.
-        While effective, this essentially acts as a behavior cloning anchor and can hinder downstream online policy improvement when dataset actions are suboptimal.
-        We propose RankQ, an offline-to-online Q-learning objective that augments temporal-difference learning with a self-supervised multi-term ranking loss to enforce structured action ordering.
-        By learning relative action preferences rather than uniformly penalizing unseen actions, RankQ shapes the Q-function such that action gradients are directed toward higher-quality behaviors.
-        Across sparse-reward D4RL benchmarks, RankQ achieves competitive overall performance against seven baselines.
-        In vision-based robot learning, RankQ enables effective offline-to-online fine-tuning of a pretrained vision-language-action (VLA) model in a low-data regime, achieving an average simulation success rate 38.2 percentage points higher than the next best method.
-        In a high-data setting, RankQ improves simulation performance by 13.7 percentage points over the next best method and demonstrates sim-to-real transfer, increasing real-world cube stacking success from 43.1% to 88.9% relative to the VLA’s initial performance.
+        Compare the initial VLA with RankQ after offline-to-online fine-tuning in the low-data regime.
+        After just 800 online episodes, RankQ substantially outperforms nine baseline methods,
+        achieving an <strong>average success rate 38.2 percentage points higher than the next best non-RankQ baseline</strong> across these three tasks.
       </p>
+      <div class="scene-grid">
+        <article class="scene-card" aria-labelledby="sim-carrot_plate">
+          <div class="scene-header">
+            <h3 id="sim-carrot_plate">Carrot on plate</h3>
+            <button class="scene-restart" type="button" data-scene-restart aria-label="Restart Carrot on plate videos" hidden>Restart</button>
+          </div>
+          <div class="scene-videos">
+            <figure>
+              <figcaption>Initial VLA <span class="success-rate">(SR: 73.7%)</span></figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="3" poster="videos/posters/baseline_carrot_plate.jpg" src="videos/baseline_carrot_plate.mp4" aria-label="Initial VLA: baseline carrot plate">
+                  <a href="videos/baseline_carrot_plate.mp4">Watch video</a>.
+                </video>
+                <span class="playback-speed">3× speed</span>
+              </div>
+            </figure>
+            <figure>
+              <figcaption class="rl-label">RankQ <span class="success-rate">(SR: 93.0%)</span></figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="3" poster="videos/posters/rankq_carrot_plate.jpg" src="videos/rankq_carrot_plate.mp4" aria-label="RankQ: rankq carrot plate">
+                  <a href="videos/rankq_carrot_plate.mp4">Watch video</a>.
+                </video>
+                <span class="playback-speed">3× speed</span>
+              </div>
+            </figure>
+          </div>
+          <p class="scene-task">Task: “put the carrot on the plate.”</p>
+        </article>
+
+        <article class="scene-card" aria-labelledby="sim-cube_stack">
+          <div class="scene-header">
+            <h3 id="sim-cube_stack">Cube stacking</h3>
+            <button class="scene-restart" type="button" data-scene-restart aria-label="Restart Cube stacking videos" hidden>Restart</button>
+          </div>
+          <div class="scene-videos">
+            <figure>
+              <figcaption>Initial VLA <span class="success-rate">(SR: 24.0%)</span></figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="3" poster="videos/posters/baseline_cube_stack.jpg" src="videos/baseline_cube_stack.mp4" aria-label="Initial VLA: baseline cube stack">
+                  <a href="videos/baseline_cube_stack.mp4">Watch video</a>.
+                </video>
+                <span class="playback-speed">3× speed</span>
+              </div>
+            </figure>
+            <figure>
+              <figcaption class="rl-label">RankQ <span class="success-rate">(SR: 94.0%)</span></figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="3" poster="videos/posters/rankq_cube_stack.jpg" src="videos/rankq_cube_stack.mp4" aria-label="RankQ: rankq cube stack">
+                  <a href="videos/rankq_cube_stack.mp4">Watch video</a>.
+                </video>
+                <span class="playback-speed">3× speed</span>
+              </div>
+            </figure>
+          </div>
+          <p class="scene-task">Task: “stack the green cube on the yellow cube.”</p>
+        </article>
+
+        <article class="scene-card" aria-labelledby="sim-spoon_bowl">
+          <div class="scene-header">
+            <h3 id="sim-spoon_bowl">Spoon in bowl</h3>
+            <button class="scene-restart" type="button" data-scene-restart aria-label="Restart Spoon in bowl videos" hidden>Restart</button>
+          </div>
+          <div class="scene-videos">
+            <figure>
+              <figcaption>Initial VLA <span class="success-rate">(SR: 20.7%)</span></figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="3" poster="videos/posters/baseline_spoon_bowl.jpg" src="videos/baseline_spoon_bowl.mp4" aria-label="Initial VLA: baseline spoon bowl">
+                  <a href="videos/baseline_spoon_bowl.mp4">Watch video</a>.
+                </video>
+                <span class="playback-speed">3× speed</span>
+                <span class="video-note" data-start="25.6" data-end="38.4" hidden>Failure: bowl tipped over</span>
+              </div>
+            </figure>
+            <figure>
+              <figcaption class="rl-label">RankQ <span class="success-rate">(SR: 80.0%)</span></figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="3" poster="videos/posters/rankq_spoon_bowl.jpg" src="videos/rankq_spoon_bowl.mp4" aria-label="RankQ: rankq spoon bowl">
+                  <a href="videos/rankq_spoon_bowl.mp4">Watch video</a>.
+                </video>
+                <span class="playback-speed">3× speed</span>
+              </div>
+            </figure>
+          </div>
+          <p class="scene-task">Task: “put the spoon in the bowl.”</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="sim-to-real-examples">
+      <h2>Sim-to-Real Examples</h2>
+      <p>
+        We evaluate zero-shot sim-to-real transfer on cube stacking, where the robot must stack the green cube on the yellow cube. We compare two RankQ checkpoints trained in the high-data regime against the initial VLA and Cal-QL over 288 real-world experiments.
+        <strong>With just 40% of the online training required by Cal-QL, RankQ (0.4) achieves comparative performance while increasing cube stacking success from 43.1% to 88.9% relative to the initial VLA.</strong>
+      </p>
+      <div class="scene-grid">
+        <article class="scene-card" aria-labelledby="exp-37">
+          <div class="scene-header">
+            <h3 id="exp-37">Exp. 37</h3>
+            <button class="scene-restart" type="button" data-scene-restart aria-label="Restart Exp. 37 videos" hidden>Restart</button>
+          </div>
+          <div class="scene-videos">
+            <figure>
+              <figcaption>Initial VLA</figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="2" poster="videos/posters/baseline_exp_37.jpg" src="videos/baseline_exp_37.mp4" aria-label="Initial VLA: baseline exp 37">
+                  <a href="videos/baseline_exp_37.mp4">Watch video</a>.
+                </video>
+                <span class="playback-speed">2× speed</span>
+              </div>
+            </figure>
+            <figure>
+              <figcaption class="rl-label">RankQ (0.4)</figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="2" poster="videos/posters/rankq_exp_37.jpg" src="videos/rankq_exp_37.mp4" aria-label="RankQ (0.4): rankq exp 37">
+                  <a href="videos/rankq_exp_37.mp4">Watch video</a>.
+                </video>
+                <span class="playback-speed">2× speed</span>
+              </div>
+            </figure>
+          </div>
+          <p class="scene-description">The initial VLA misses the grasp on the green cube and then hovers in confusion. RankQ grasps and stacks the cubes in one attempt.</p>
+        </article>
+
+        <article class="scene-card" aria-labelledby="exp-50">
+          <div class="scene-header">
+            <h3 id="exp-50">Exp. 50</h3>
+            <button class="scene-restart" type="button" data-scene-restart aria-label="Restart Exp. 50 videos" hidden>Restart</button>
+          </div>
+          <div class="scene-videos">
+            <figure>
+              <figcaption>Initial VLA</figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="2" poster="videos/posters/baseline_exp_50.jpg" src="videos/baseline_exp_50.mp4" aria-label="Initial VLA: baseline exp 50">
+                  <a href="videos/baseline_exp_50.mp4">Watch video</a>.
+                </video>
+                <span class="playback-speed">2× speed</span>
+              </div>
+            </figure>
+            <figure>
+              <figcaption class="rl-label">RankQ (0.4)</figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="2" poster="videos/posters/rankq_exp_50.jpg" src="videos/rankq_exp_50.mp4" aria-label="RankQ (0.4): rankq exp 50">
+                  <a href="videos/rankq_exp_50.mp4">Watch video</a>.
+                </video>
+                <span class="playback-speed">2× speed</span>
+              </div>
+            </figure>
+          </div>
+          <p class="scene-description">The initial VLA fails its first grasp attempt and afterward attempts to stack the green cube but ends up pushing the yellow cube out-of-reach. RankQ grasps and stacks the cubes in one attempt.</p>
+        </article>
+
+        <article class="scene-card" aria-labelledby="exp-8">
+          <div class="scene-header">
+            <h3 id="exp-8">Exp. 8</h3>
+            <button class="scene-restart" type="button" data-scene-restart aria-label="Restart Exp. 8 videos" hidden>Restart</button>
+          </div>
+          <div class="scene-videos">
+            <figure>
+              <figcaption>Initial VLA</figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="2" poster="videos/posters/baseline_exp_8.jpg" src="videos/baseline_exp_8.mp4" aria-label="Initial VLA: baseline exp 8">
+                  <a href="videos/baseline_exp_8.mp4">Watch video</a>.
+                </video>
+                <span class="playback-speed">2× speed</span>
+              </div>
+            </figure>
+            <figure>
+              <figcaption class="rl-label">RankQ (0.4)</figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="2" poster="videos/posters/rankq_exp_8.jpg" src="videos/rankq_exp_8.mp4" aria-label="RankQ (0.4): rankq exp 8">
+                  <a href="videos/rankq_exp_8.mp4">Watch video</a>.
+                </video>
+                <span class="playback-speed">2× speed</span>
+              </div>
+            </figure>
+          </div>
+          <p class="scene-description">The initial VLA repeatedly misses the grasp on the green cube. It eventually succeeds but then times out before stacking. RankQ grasps and stacks the cubes in one attempt.</p>
+        </article>
+
+        <article class="scene-card" aria-labelledby="exp-22">
+          <div class="scene-header">
+            <h3 id="exp-22">Exp. 22</h3>
+            <button class="scene-restart" type="button" data-scene-restart aria-label="Restart Exp. 22 videos" hidden>Restart</button>
+          </div>
+          <div class="scene-videos">
+            <figure>
+              <figcaption>Initial VLA</figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="2" poster="videos/posters/baseline_exp_22.jpg" src="videos/baseline_exp_22.mp4" aria-label="Initial VLA: baseline exp 22">
+                  <a href="videos/baseline_exp_22.mp4">Watch video</a>.
+                </video>
+                <span class="playback-speed">2× speed</span>
+              </div>
+            </figure>
+            <figure>
+              <figcaption class="rl-label">RankQ (0.4)</figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="2" poster="videos/posters/rankq_exp_22.jpg" src="videos/rankq_exp_22.mp4" aria-label="RankQ (0.4): rankq exp 22">
+                  <a href="videos/rankq_exp_22.mp4">Watch video</a>.
+                </video>
+                <span class="playback-speed">2× speed</span>
+              </div>
+            </figure>
+          </div>
+          <p class="scene-description">The initial VLA fails its initial grasp and its initial stack attempt. It then gets stuck trying to regrasp. RankQ also fails the initial stack but quickly reattempts the task, succeeding before timeout.</p>
+        </article>
+      </div>
     </section>
 
     <section id="methodology">
@@ -327,7 +817,7 @@
       <p>
         These constructions allow us to impose structured ordering constraints. First, we enforce that successful actions are preferred over all suboptimal variants:
       </p>
-      <div class="equation-block">
+      <div class="equation-block" role="region" aria-label="Successful action ranking" tabindex="0">
         \[
         Q(s,a) > Q(s,a'), \quad
         a' \in \{a_{\epsilon}, a_{2\epsilon}, a_r, a_p\}, \;
@@ -338,7 +828,7 @@
         Enforcing only this success-ranking constraint would essentially produce a Q-landscape with a gradient field similar to CQL and Cal-QL.
         Rather than stopping here, we also enforce ordering among suboptimal actions by using action-space proximity to successful actions as a heuristic for relative quality:
       </p>
-      <div class="equation-block">
+      <div class="equation-block" role="region" aria-label="Suboptimal action ranking" tabindex="0">
         \[
         Q(s,a_{\epsilon}) > Q(s,a_{2\epsilon}) > Q(s,a_r).
         \]
@@ -347,7 +837,7 @@
         Finally, we incorporate failure trajectories to provide additional supervision in low-quality regions of the state space.
         We enforce that a failure dataset action is still preferable to random actions:
       </p>
-      <div class="equation-block">
+      <div class="equation-block" role="region" aria-label="Failure action ranking" tabindex="0">
         \[
         Q(s,a) > Q(s,a_r), \; (s,a)\sim \mathcal D_{\textrm{failure}},
         \]
@@ -424,7 +914,7 @@
         To simulate a pseudo real-data bottleneck, we define a challenging low-data regime as using 200 VLA self-rollouts as the offline dataset together with only 8 online rollouts per update.
         Using this limited data budget, RankQ is the only algorithm that consistently and significantly improves the VLA beyond its baseline performance.
         Note that since cube stacking and spoon-into-bowl have only about a 20% initial success rate, roughly 80% of the offline dataset consists of failure trajectories.
-        <strong>RankQ has on average 38.2% higher success rate compared to the next best non-RankQ method.</strong>
+        <strong>RankQ achieves an average success rate 38.2 percentage points higher than the next best non-RankQ method.</strong>
       </p>
 
       <h2>VLA RL Fine-tuning in High-data Regime</h2>
@@ -432,66 +922,23 @@
       <p class="result-caption">High-data VLA RL fine-tuning results across 3 random seeds. Curves start after offline RL has concluded.</p>
       <p>
         We define a high-data regime as using 800 VLA self-rollouts as the offline dataset together with 192 online rollouts per update.
-        WIth an initial VLA success rate of about 8%, only about 64 successful trajectories exist in the offline dataset.
+        With an initial VLA success rate of about 8%, only about 64 successful trajectories exist in the offline dataset.
         Extensive domain randomization is used for this environment to enable sim-to-real transfer.
-        <strong>RankQ has a 13.7% higher success rate and 25.7% faster task completion speed compared to the next best method.</strong>
+        <strong>RankQ achieves a success rate 13.7 percentage points higher and 25.7% faster task completion speed compared to the next best method.</strong>
       </p>
 
-      <h2>Sim-to-Real Results</h2>
-      <div class="sim2real-summary">
-        <p>
-          We zero-shot transfer two RankQ checkpoints trained in the high-data regime in the real world and compare their performance against the initial VLA and Cal-QL over 288 real-world experiments.
-          <strong>With just 40% of the online training required by Cal-QL, RankQ (0.4) achieves comparative performance while increasing cube stacking success from 43.1% to 88.9% relative to the initial VLA.</strong>
-          Reasons for RankQ (1.0)'s lower performance are described in the paper.
-        </p>
-        <img class="result-figure sim2real-table" src="figures/sim2real_table.png" alt="Sim-to-real table">
+      <div id="parallel-training">
+        <h3>Parallelized RL with Domain Randomization</h3>
+        <p>Parallelized RankQ training across randomized cube-stacking environments.</p>
+        <div class="scene-video" data-looping-video>
+          <video class="training-example" muted playsinline preload="none" data-playback-rate="3" poster="videos/posters/rankq0.4_train.jpg" src="videos/rankq0.4_train.mp4" aria-label="Parallelized RankQ training with domain randomization">
+            <a href="videos/rankq0.4_train.mp4">Watch video</a>.
+          </video>
+          <span class="playback-speed">3× speed</span>
+        </div>
       </div>
 
-      <div class="video-comparison-header">
-        <div>Initial VLA</div>
-        <div>RankQ (0.4)</div>
-      </div>
-
-      <div class="video-comparison-row">
-        <video muted loop playsinline controls preload="metadata" src="videos/baseline_videos/baseline_exp_37.mp4"></video>
-        <video muted loop playsinline controls preload="metadata" src="videos/rl_videos/rl_exp_37.mp4"></video>
-      </div>
-      <p>
-        <strong>Exp. 37.</strong>
-        The initial VLA misses the grasp on the green cube and then hovers in confusion.
-        RankQ grasps and stacks the cubes in one attempt.
-      </p>
-
-      <div class="video-comparison-row">
-        <video muted loop playsinline controls preload="metadata" src="videos/baseline_videos/baseline_exp_50.mp4"></video>
-        <video muted loop playsinline controls preload="metadata" src="videos/rl_videos/rl_exp_50.mp4"></video>
-      </div>
-      <p>
-        <strong>Exp. 50.</strong>
-        The initial VLA fails its first grasp attempt and afterward attempts to stack the green cube but ends up pushing the yellow cube out-of-reach.
-        RankQ grasps and stacks the cubes in one attempt.
-      </p>
-
-      <div class="video-comparison-row">
-        <video muted loop playsinline controls preload="metadata" src="videos/baseline_videos/baseline_exp_8.mp4"></video>
-        <video muted loop playsinline controls preload="metadata" src="videos/rl_videos/rl_exp_8.mp4"></video>
-      </div>
-      <p>
-        <strong>Exp. 8.</strong>
-        The initial VLA repeatedly misses the grasp on the green cube. It eventually succeeds but then times out before stacking.
-        RankQ grasps and stacks the cubes in one attempt.
-      </p>
     </section>
-
-      <div class="video-comparison-row">
-        <video muted loop playsinline controls preload="metadata" src="videos/baseline_videos/baseline_exp_22.mp4"></video>
-        <video muted loop playsinline controls preload="metadata" src="videos/rl_videos/rl_exp_22.mp4"></video>
-      </div>
-      <p>
-        <strong>Exp. 22.</strong>
-        The initial VLA fails its initial grasp and its initial stack attempt. It then gets stuck trying to regrasp.
-        RankQ also fails the initial stack but quickly reattempts the task, succeeding before timeout.
-      </p>
 
     <section id="bibtex">
       <h2>Citation</h2>
@@ -513,6 +960,14 @@
       </p>
     </section>
   </main>
+
+  <dialog class="overview-dialog" id="overview-dialog" aria-labelledby="overview-dialog-title">
+    <div class="overview-dialog-header">
+      <strong id="overview-dialog-title">RankQ Q-landscape overview</strong>
+      <button class="overview-close" type="button" autofocus>Close ×</button>
+    </div>
+    <img src="figures/toy_example.png" alt="Enlarged comparison of the Q-landscapes and action gradients learned by different critic objectives, including RankQ.">
+  </dialog>
 
   <footer class="site-footer">
     <p class="footer-text"><strong>Horizon Robotics GAIL</strong></p>
