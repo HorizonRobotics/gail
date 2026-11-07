@@ -10,6 +10,8 @@
   <link rel="preconnect" href="https://rsms.me/">
   <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
   <link rel="stylesheet" href="../style.css">
+  <script src="videos.js" defer></script>
+  <script src="overview.js" defer></script>
   <script>
     window.MathJax = {
       tex: {
@@ -25,7 +27,8 @@
       --page-font-size: 16px;
       --page-max-width: 1100px;
       --title-max-width: 950px;
-      --page-background: #f2f2f2;
+      --page-background: #f7f8fa;
+      margin: 2rem clamp(1rem, 4vw, 2rem);
       background: var(--page-background);
       color: #111;
       font-family: var(--page-font-family);
@@ -40,15 +43,25 @@
 
     header h1 {
       margin-bottom: 0.25em;
+      font-size: clamp(1.75rem, 3vw, 2.25rem);
+      line-height: 1.25;
     }
 
     main {
+      box-sizing: border-box;
       max-width: var(--page-max-width);
+      padding: 0;
+      margin: 0 auto;
     }
 
     section {
       margin-top: 2.5em;
       margin-bottom: 2.5em;
+    }
+
+    main section > h2 {
+      border-bottom: 1px solid #b8c1ce;
+      padding-bottom: 0.6rem;
     }
 
     .paper-meta {
@@ -61,8 +74,68 @@
       margin: 0.5em 0;
     }
 
+    .paper-links {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      margin-top: 1.25rem;
+    }
+
+    .paper-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.55rem 1.2rem;
+      border-radius: 999px;
+      background: #24282e;
+      color: #fff;
+      font: inherit;
+      font-weight: 700;
+      transition: background 150ms ease;
+    }
+
+    .paper-link:hover {
+      background: #145aa0;
+      text-decoration: none;
+    }
+
+    .paper-link svg {
+      width: 1.1rem;
+      height: 1.1rem;
+    }
+
+    a:focus-visible,
+    button:focus-visible {
+      outline: 3px solid #145aa0;
+      outline-offset: 4px;
+    }
+
+    .scene-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .scene-restart {
+      border: 1px solid #c9d1db;
+      border-radius: 999px;
+      padding: 0.15rem 0.85rem;
+      background: #fff;
+      color: #334155;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .scene-restart:hover {
+      border-color: #145aa0;
+      color: #145aa0;
+    }
+
     .conference {
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 400;
       color: #59595f;
       margin: 0 0 0.85rem;
@@ -72,11 +145,61 @@
       margin-top: 1em;
     }
 
-    #abstract p {
-      max-width: 1050px;
-      margin-left: auto;
-      margin-right: auto;
-      text-align: justify;
+    #contributions h2 {
+      margin-bottom: 0.5rem;
+    }
+
+    .contributions-intro {
+      margin-top: 0;
+    }
+
+    .contributions-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1rem;
+      padding: 0;
+      margin: 1.5rem 0 0;
+      list-style: none;
+    }
+
+    .contributions-grid li {
+      padding: 1.25rem 1rem;
+      background: #fff;
+      border: 1px solid #dfe4eb;
+      border-top: 3px solid #008638;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .contribution-metric {
+      margin: 0 0 0.5rem;
+      color: #008638;
+      font-size: 1.75em;
+      font-weight: 700;
+      line-height: 1.3;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .contributions-grid h3 {
+      margin: 0 0 0.5rem;
+      font-size: 1em;
+    }
+
+    .contribution-context {
+      margin: 0;
+    }
+
+    @media (max-width: 1100px) {
+      .contributions-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 480px) {
+      .contributions-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     #bibtex pre {
@@ -93,8 +216,62 @@
       display: block;
     }
 
-    .training-example,
-    .overview-video {
+    .overview-expand {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      color: #111;
+      cursor: zoom-in;
+    }
+
+    .overview-dialog {
+      box-sizing: border-box;
+      width: min(1600px, calc(100vw - 2rem));
+      max-width: none;
+      max-height: calc(100dvh - 2rem);
+      padding: 1rem;
+      border: 0;
+      border-radius: 12px;
+      background: #fff;
+      color: #111;
+      font: inherit;
+    }
+
+    .overview-dialog::backdrop {
+      background: rgb(0 0 0 / 80%);
+    }
+
+    .overview-dialog-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .overview-close {
+      padding: 0.25rem 0.75rem;
+      border: 1px solid #c9d1db;
+      border-radius: 999px;
+      background: #fff;
+      color: #111;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .overview-dialog img {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: calc(100dvh - 8rem);
+      object-fit: contain;
+    }
+
+    body.overview-open {
+      overflow: hidden;
+    }
+
+    .training-example {
       width: 100%;
       height: auto;
       display: block;
@@ -125,50 +302,105 @@
       text-align: justify;
     }
 
-    .video-comparison-header,
-    .video-comparison-row {
+    .scene-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1em;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem 1.5rem;
       align-items: start;
     }
 
-    .video-comparison-header {
-      font-size: 1.3em;
-      font-weight: bold;
-      text-align: center;
-      margin-bottom: 0.5em;
+    .scene-card {
+      min-width: 0;
+      padding: 0.65rem 1rem;
+      line-height: 1.45;
+      background: #fff;
+      border: 0;
+      border-bottom: 1px solid #ceccdf;
+      border-radius: 0;
+      box-shadow: none;
     }
 
-    .video-comparison-row {
-      margin-bottom: 1em;
+    .scene-card h3 {
+      margin: 0;
+      font-size: 1em;
+      font-weight: 700;
     }
 
-    .video-pair {
-      display: contents;
+    .scene-videos {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.65rem;
     }
 
-    .video-comparison-row video {
+    .scene-videos figure {
+      min-width: 0;
+      margin: 0;
+    }
+
+    .scene-videos figcaption {
+      margin-bottom: 0.2rem;
+      font: inherit;
+    }
+
+    .scene-video {
+      position: relative;
+    }
+
+    .playback-speed {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      background: rgb(0 0 0 / 55%);
+      color: #fff;
+      font: inherit;
+      font-size: 0.875em;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    .scene-videos .rl-label {
+      color: #145aa0;
+    }
+
+    .scene-videos video {
       width: 100%;
       height: auto;
+      aspect-ratio: 4 / 3;
       display: block;
-      border-radius: 14px;
+      border-radius: 8px;
+      background: #e8eef5;
     }
 
-    .video-label {
-      grid-column: 1 / -1;
-      text-align: justify;
-      margin: 0.35em 0 1em;
+    .scene-task {
+      margin: 0.5rem 0 0.2rem;
+      font: inherit;
+    }
+
+    .scene-distractors {
+      margin: 0;
+      font: inherit;
+    }
+
+    .ood {
+      color: #145aa0;
+      font-weight: 700;
+    }
+
+    .scene-legend {
+      margin: 1rem 0 1.5rem;
+      font: inherit;
     }
 
     @media (max-width: 768px) {
-      .video-comparison-header {
-        display: none;
-      }
-
-      .video-comparison-row,
+      .scene-grid,
       .simulation-results-columns {
         grid-template-columns: 1fr;
+      }
+
+      header h1 {
+        font-size: clamp(1.75rem, 5vw, 2rem);
       }
     }
   </style>
@@ -186,39 +418,415 @@
         <code>{firstname.lastname}@horizon.auto</code> <br>
         Horizon Robotics <sup>&dagger;</sup>Corresponding author
       </p>
-      <p>
-        <a href="https://arxiv.org/abs/2603.18532" target="_blank" rel="noopener noreferrer">arXiv</a>
-        |
-        <a href="https://arxiv.org/pdf/2603.18532" target="_blank" rel="noopener noreferrer">PDF</a>
-      </p>
+      <nav class="paper-links" aria-label="Paper resources">
+        <a class="paper-link" href="https://arxiv.org/pdf/2603.18532" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h6"/></svg>
+          PDF
+        </a>
+        <a class="paper-link" href="https://arxiv.org/abs/2603.18532" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m5 3 14 18M5 21l5-7m4-4 5-7"/></svg>
+          arXiv
+        </a>
+      </nav>
     </section>
 
     <section id="front-page">
-      <img class="front-page-figure" src="figures/front_page.png" alt="Front page visualization">
+      <a class="overview-expand" href="figures/front_page.png" aria-label="Enlarge method overview figure" aria-haspopup="dialog" aria-controls="overview-dialog">
+        <img class="front-page-figure" src="figures/front_page.png" alt="Method overview: real-world demonstrations train an imitation policy; a scene designer and 3D world model generate diverse scenes for RL fine-tuning and transfer to real robots.">
+      </a>
     </section>
 
-    <section id="video-overview">
-      <h2>Results Preview</h2>
-      <video class="overview-video" controls playsinline preload="metadata" aria-label="Scaling Sim-to-Real VLA Reinforcement Learning video overview">
-        <source src="videos/results_preview.mp4" type="video/mp4">
-        Your browser does not support embedded video. <a href="videos/results_preview.mp4">Download the video</a>.
-      </video>
-    </section>
-
-    <section id="abstract">
-      <h2>Abstract</h2>
-      <p>
-      The strong performance of large vision–language models (VLMs) trained with reinforcement learning (RL) has motivated similar approaches for fine-tuning vision–language–action (VLA) models in robotics.
-      Many recent works fine-tune VLAs directly in the real world to avoid addressing the sim-to-real gap.
-      While real-world RL circumvents sim-to-real issues, it inherently limits the generality of the resulting VLA, as scaling scene and object diversity in the physical world is prohibitively difficult.
-      This leads to the paradoxical outcome of transforming a broadly pretrained model into an overfitted, scene-specific policy.
-      Training in simulation can instead provide access to diverse scenes, but designing those scenes is also costly.
-      In this work, we show that VLAs can be RL fine-tuned across broad scene and object distributions and with reduced labor by leveraging 3D world generative models.
-      Using these models together with a language-driven scene designer, we generate 100 diverse interactive scenes containing unique objects and backgrounds, enabling scalable and highly parallel policy learning.
-      Starting from a pretrained imitation baseline, our approach increases simulation success from 9.7% up to 79.8% while achieving a 1.25× speedup in task completion time.
-      We further demonstrate successful sim-to-real transfer enabled by the quality of the generated scenes together with domain randomization, improving real-world success from 21.7% to 75% and achieving a 1.13× speedup.
-      Finally, we further highlight the benefits of leveraging the effectively unlimited data from 3D world generative models through an ablation study showing that increasing scene diversity directly improves zero-shot generalization.
+    <section id="contributions" aria-labelledby="contributions-heading">
+      <h2 id="contributions-heading">Contributions</h2>
+      <p class="contributions-intro">
+        Generative 3D worlds enable scalable VLA reinforcement learning across diverse scenes,
+        with successful transfer to real robots.
       </p>
+      <ul class="contributions-grid">
+        <li>
+          <p class="contribution-metric">9.7% → 79.8%</p>
+          <h3>Simulation success</h3>
+          <p class="contribution-context">Across 100 generated scenes.</p>
+        </li>
+        <li>
+          <p class="contribution-metric">53.2% → 77.9%</p>
+          <h3>OOD success</h3>
+          <p class="contribution-context">As training diversity increases from 1 to 50 scenes.</p>
+        </li>
+        <li>
+          <p class="contribution-metric">21.7% → 75%</p>
+          <h3>Real-world success</h3>
+          <p class="contribution-context">Across 12 scenes and 240 experiments.</p>
+        </li>
+        <li>
+          <p class="contribution-metric">2.36×</p>
+          <h3>Faster inference</h3>
+          <p class="contribution-context">By converting a flow-matching model to a one-step Gaussian policy.</p>
+        </li>
+      </ul>
+    </section>
+
+    <section id="sim-to-real-examples">
+      <h2>Sim-to-Real Examples</h2>
+      <p>
+        We zero-shot sim-to-real deploy a policy trained on $N=100$ EmbodiedGen scenes and compare its performance with the VLA's initial performance.
+        <strong>RL fine-tuning with 100 generated scenes increases success from 21.7% to 75% while increasing the average task completion speed by 13% over 240 experiments across 12 real-world scenes. </strong>
+      </p>
+
+      <p class="scene-legend">
+        <strong class="ood">Blue, bold text</strong> marks objects or attributes that were out of distribution (OOD)
+        during RL training, following <a href="https://arxiv.org/html/2603.18532v1#S4.T2" target="_blank" rel="noopener noreferrer">Table 2</a>.
+        Attributes in parentheses describe the scene and were not included in the language command.
+      </p>
+      <div class="scene-grid">
+        <article class="scene-card" aria-labelledby="scene-0">
+          <div class="scene-header">
+            <h3 id="scene-0">Scene 0</h3>
+            <button class="scene-restart" type="button" data-scene-restart aria-label="Restart Scene 0 videos" hidden>Restart</button>
+          </div>
+          <div class="scene-videos">
+            <figure>
+              <figcaption>Imitation</figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="3" poster="videos/posters/scene_0_imitation.jpg" src="videos/scene_0_imitation.mp4" aria-label="Scene 0: imitation baseline">
+                  <a href="videos/scene_0_imitation.mp4">Watch imitation video</a>.
+                </video>
+                <span class="playback-speed">3× speed</span>
+              </div>
+            </figure>
+            <figure>
+              <figcaption class="rl-label">RL fine-tuned</figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="2" poster="videos/posters/scene_0_rl.jpg" src="videos/scene_0_rl.mp4" aria-label="Scene 0: RL fine-tuned policy">
+                  <a href="videos/scene_0_rl.mp4">Watch RL video</a>.
+                </video>
+                <span class="playback-speed">2× speed</span>
+              </div>
+            </figure>
+          </div>
+          <p class="scene-task">Task: “put the banana on the bowl.”</p>
+          <p class="scene-distractors">Distractors: broccoli, strawberry, plate</p>
+        </article>
+
+        <article class="scene-card" aria-labelledby="scene-1">
+          <div class="scene-header">
+            <h3 id="scene-1">Scene 1</h3>
+            <button class="scene-restart" type="button" data-scene-restart aria-label="Restart Scene 1 videos" hidden>Restart</button>
+          </div>
+          <div class="scene-videos">
+            <figure>
+              <figcaption>Imitation</figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="3" poster="videos/posters/scene_1_imitation.jpg" src="videos/scene_1_imitation.mp4" aria-label="Scene 1: imitation baseline">
+                  <a href="videos/scene_1_imitation.mp4">Watch imitation video</a>.
+                </video>
+                <span class="playback-speed">3× speed</span>
+              </div>
+            </figure>
+            <figure>
+              <figcaption class="rl-label">RL fine-tuned</figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="2" poster="videos/posters/scene_1_rl.jpg" src="videos/scene_1_rl.mp4" aria-label="Scene 1: RL fine-tuned policy">
+                  <a href="videos/scene_1_rl.mp4">Watch RL video</a>.
+                </video>
+                <span class="playback-speed">2× speed</span>
+              </div>
+            </figure>
+          </div>
+          <p class="scene-task">Task: “put the broccoli on the mug.”</p>
+          <p class="scene-distractors">Distractors: knife, cutting board</p>
+        </article>
+
+        <article class="scene-card" aria-labelledby="scene-2">
+          <div class="scene-header">
+            <h3 id="scene-2">Scene 2</h3>
+            <button class="scene-restart" type="button" data-scene-restart aria-label="Restart Scene 2 videos" hidden>Restart</button>
+          </div>
+          <div class="scene-videos">
+            <figure>
+              <figcaption>Imitation</figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="3" poster="videos/posters/scene_2_imitation.jpg" src="videos/scene_2_imitation.mp4" aria-label="Scene 2: imitation baseline">
+                  <a href="videos/scene_2_imitation.mp4">Watch imitation video</a>.
+                </video>
+                <span class="playback-speed">3× speed</span>
+              </div>
+            </figure>
+            <figure>
+              <figcaption class="rl-label">RL fine-tuned</figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="2" poster="videos/posters/scene_2_rl.jpg" src="videos/scene_2_rl.mp4" aria-label="Scene 2: RL fine-tuned policy">
+                  <a href="videos/scene_2_rl.mp4">Watch RL video</a>.
+                </video>
+                <span class="playback-speed">2× speed</span>
+              </div>
+            </figure>
+          </div>
+          <p class="scene-task">Task: “put the mushroom on the bowl.”</p>
+          <p class="scene-distractors">Distractors: banana, broccoli, plate</p>
+        </article>
+
+        <article class="scene-card" aria-labelledby="scene-3">
+          <div class="scene-header">
+            <h3 id="scene-3">Scene 3</h3>
+            <button class="scene-restart" type="button" data-scene-restart aria-label="Restart Scene 3 videos" hidden>Restart</button>
+          </div>
+          <div class="scene-videos">
+            <figure>
+              <figcaption>Imitation</figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="3" poster="videos/posters/scene_3_imitation.jpg" src="videos/scene_3_imitation.mp4" aria-label="Scene 3: imitation baseline">
+                  <a href="videos/scene_3_imitation.mp4">Watch imitation video</a>.
+                </video>
+                <span class="playback-speed">3× speed</span>
+              </div>
+            </figure>
+            <figure>
+              <figcaption class="rl-label">RL fine-tuned</figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="2" poster="videos/posters/scene_3_rl.jpg" src="videos/scene_3_rl.mp4" aria-label="Scene 3: RL fine-tuned policy">
+                  <a href="videos/scene_3_rl.mp4">Watch RL video</a>.
+                </video>
+                <span class="playback-speed">2× speed</span>
+              </div>
+            </figure>
+          </div>
+          <p class="scene-task">Task: “put the spoon on the napkin.”</p>
+          <p class="scene-distractors">Distractors: fork, plate</p>
+        </article>
+
+        <article class="scene-card" aria-labelledby="scene-4">
+          <div class="scene-header">
+            <h3 id="scene-4">Scene 4</h3>
+            <button class="scene-restart" type="button" data-scene-restart aria-label="Restart Scene 4 videos" hidden>Restart</button>
+          </div>
+          <div class="scene-videos">
+            <figure>
+              <figcaption>Imitation</figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="3" poster="videos/posters/scene_4_imitation.jpg" src="videos/scene_4_imitation.mp4" aria-label="Scene 4: imitation baseline">
+                  <a href="videos/scene_4_imitation.mp4">Watch imitation video</a>.
+                </video>
+                <span class="playback-speed">3× speed</span>
+              </div>
+            </figure>
+            <figure>
+              <figcaption class="rl-label">RL fine-tuned</figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="2" poster="videos/posters/scene_4_rl.jpg" src="videos/scene_4_rl.mp4" aria-label="Scene 4: RL fine-tuned policy">
+                  <a href="videos/scene_4_rl.mp4">Watch RL video</a>.
+                </video>
+                <span class="playback-speed">2× speed</span>
+              </div>
+            </figure>
+          </div>
+          <p class="scene-task">Task: “put the (pink) eraser on the notebook.”</p>
+          <p class="scene-distractors">Distractors: black pen, mug</p>
+        </article>
+
+        <article class="scene-card" aria-labelledby="scene-5">
+          <div class="scene-header">
+            <h3 id="scene-5">Scene 5</h3>
+            <button class="scene-restart" type="button" data-scene-restart aria-label="Restart Scene 5 videos" hidden>Restart</button>
+          </div>
+          <div class="scene-videos">
+            <figure>
+              <figcaption>Imitation</figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="3" poster="videos/posters/scene_5_imitation.jpg" src="videos/scene_5_imitation.mp4" aria-label="Scene 5: imitation baseline">
+                  <a href="videos/scene_5_imitation.mp4">Watch imitation video</a>.
+                </video>
+                <span class="playback-speed">3× speed</span>
+              </div>
+            </figure>
+            <figure>
+              <figcaption class="rl-label">RL fine-tuned</figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="2" poster="videos/posters/scene_5_rl.jpg" src="videos/scene_5_rl.mp4" aria-label="Scene 5: RL fine-tuned policy">
+                  <a href="videos/scene_5_rl.mp4">Watch RL video</a>.
+                </video>
+                <span class="playback-speed">2× speed</span>
+              </div>
+            </figure>
+          </div>
+          <p class="scene-task">Task: “put the <strong class="ood">(yellow) brush</strong> on the bowl.”</p>
+          <p class="scene-distractors">Distractors: banana, <strong class="ood">yellow</strong> marker</p>
+        </article>
+
+        <article class="scene-card" aria-labelledby="scene-6">
+          <div class="scene-header">
+            <h3 id="scene-6">Scene 6</h3>
+            <button class="scene-restart" type="button" data-scene-restart aria-label="Restart Scene 6 videos" hidden>Restart</button>
+          </div>
+          <div class="scene-videos">
+            <figure>
+              <figcaption>Imitation</figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="3" poster="videos/posters/scene_6_imitation.jpg" src="videos/scene_6_imitation.mp4" aria-label="Scene 6: imitation baseline">
+                  <a href="videos/scene_6_imitation.mp4">Watch imitation video</a>.
+                </video>
+                <span class="playback-speed">3× speed</span>
+              </div>
+            </figure>
+            <figure>
+              <figcaption class="rl-label">RL fine-tuned</figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="2" poster="videos/posters/scene_6_rl.jpg" src="videos/scene_6_rl.mp4" aria-label="Scene 6: RL fine-tuned policy">
+                  <a href="videos/scene_6_rl.mp4">Watch RL video</a>.
+                </video>
+                <span class="playback-speed">2× speed</span>
+              </div>
+            </figure>
+          </div>
+          <p class="scene-task">Task: “put the <strong class="ood">white</strong> eraser on the mug.”</p>
+          <p class="scene-distractors">Distractors: pink eraser, black pen, <strong class="ood">blue</strong> pen</p>
+        </article>
+
+        <article class="scene-card" aria-labelledby="scene-7">
+          <div class="scene-header">
+            <h3 id="scene-7">Scene 7</h3>
+            <button class="scene-restart" type="button" data-scene-restart aria-label="Restart Scene 7 videos" hidden>Restart</button>
+          </div>
+          <div class="scene-videos">
+            <figure>
+              <figcaption>Imitation</figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="3" poster="videos/posters/scene_7_imitation.jpg" src="videos/scene_7_imitation.mp4" aria-label="Scene 7: imitation baseline">
+                  <a href="videos/scene_7_imitation.mp4">Watch imitation video</a>.
+                </video>
+                <span class="playback-speed">3× speed</span>
+              </div>
+            </figure>
+            <figure>
+              <figcaption class="rl-label">RL fine-tuned</figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="2" poster="videos/posters/scene_7_rl.jpg" src="videos/scene_7_rl.mp4" aria-label="Scene 7: RL fine-tuned policy">
+                  <a href="videos/scene_7_rl.mp4">Watch RL video</a>.
+                </video>
+                <span class="playback-speed">2× speed</span>
+              </div>
+            </figure>
+          </div>
+          <p class="scene-task">Task: “put the <strong class="ood">red</strong> knife on the cutting board.”</p>
+          <p class="scene-distractors">Distractors: regular knife</p>
+        </article>
+
+        <article class="scene-card" aria-labelledby="scene-8">
+          <div class="scene-header">
+            <h3 id="scene-8">Scene 8</h3>
+            <button class="scene-restart" type="button" data-scene-restart aria-label="Restart Scene 8 videos" hidden>Restart</button>
+          </div>
+          <div class="scene-videos">
+            <figure>
+              <figcaption>Imitation</figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="3" poster="videos/posters/scene_8_imitation.jpg" src="videos/scene_8_imitation.mp4" aria-label="Scene 8: imitation baseline">
+                  <a href="videos/scene_8_imitation.mp4">Watch imitation video</a>.
+                </video>
+                <span class="playback-speed">3× speed</span>
+              </div>
+            </figure>
+            <figure>
+              <figcaption class="rl-label">RL fine-tuned</figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="2" poster="videos/posters/scene_8_rl.jpg" src="videos/scene_8_rl.mp4" aria-label="Scene 8: RL fine-tuned policy">
+                  <a href="videos/scene_8_rl.mp4">Watch RL video</a>.
+                </video>
+                <span class="playback-speed">2× speed</span>
+              </div>
+            </figure>
+          </div>
+          <p class="scene-task">Task: “put the <strong class="ood">blue</strong> pen on the <strong class="ood">(blue)</strong> bowl.”</p>
+          <p class="scene-distractors">Distractors: black pen, white eraser, basket</p>
+        </article>
+
+        <article class="scene-card" aria-labelledby="scene-9">
+          <div class="scene-header">
+            <h3 id="scene-9">Scene 9</h3>
+            <button class="scene-restart" type="button" data-scene-restart aria-label="Restart Scene 9 videos" hidden>Restart</button>
+          </div>
+          <div class="scene-videos">
+            <figure>
+              <figcaption>Imitation</figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="3" poster="videos/posters/scene_9_imitation.jpg" src="videos/scene_9_imitation.mp4" aria-label="Scene 9: imitation baseline">
+                  <a href="videos/scene_9_imitation.mp4">Watch imitation video</a>.
+                </video>
+                <span class="playback-speed">3× speed</span>
+              </div>
+            </figure>
+            <figure>
+              <figcaption class="rl-label">RL fine-tuned</figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="2" poster="videos/posters/scene_9_rl.jpg" src="videos/scene_9_rl.mp4" aria-label="Scene 9: RL fine-tuned policy">
+                  <a href="videos/scene_9_rl.mp4">Watch RL video</a>.
+                </video>
+                <span class="playback-speed">2× speed</span>
+              </div>
+            </figure>
+          </div>
+          <p class="scene-task">Task: “put the <strong class="ood">green</strong> marker on the basket.”</p>
+          <p class="scene-distractors">Distractors: red marker, <strong class="ood">yellow</strong> marker, <strong class="ood">dry erase eraser</strong>, <strong class="ood">cardboard box</strong></p>
+        </article>
+
+        <article class="scene-card" aria-labelledby="scene-10">
+          <div class="scene-header">
+            <h3 id="scene-10">Scene 10</h3>
+            <button class="scene-restart" type="button" data-scene-restart aria-label="Restart Scene 10 videos" hidden>Restart</button>
+          </div>
+          <div class="scene-videos">
+            <figure>
+              <figcaption>Imitation</figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="3" poster="videos/posters/scene_10_imitation.jpg" src="videos/scene_10_imitation.mp4" aria-label="Scene 10: imitation baseline">
+                  <a href="videos/scene_10_imitation.mp4">Watch imitation video</a>.
+                </video>
+                <span class="playback-speed">3× speed</span>
+              </div>
+            </figure>
+            <figure>
+              <figcaption class="rl-label">RL fine-tuned</figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="2" poster="videos/posters/scene_10_rl.jpg" src="videos/scene_10_rl.mp4" aria-label="Scene 10: RL fine-tuned policy">
+                  <a href="videos/scene_10_rl.mp4">Watch RL video</a>.
+                </video>
+                <span class="playback-speed">2× speed</span>
+              </div>
+            </figure>
+          </div>
+          <p class="scene-task">Task: “put the <strong class="ood">screwdriver</strong> on the basket.”</p>
+          <p class="scene-distractors">Distractors: knife, black marker</p>
+        </article>
+
+        <article class="scene-card" aria-labelledby="scene-11">
+          <div class="scene-header">
+            <h3 id="scene-11">Scene 11</h3>
+            <button class="scene-restart" type="button" data-scene-restart aria-label="Restart Scene 11 videos" hidden>Restart</button>
+          </div>
+          <div class="scene-videos">
+            <figure>
+              <figcaption>Imitation</figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="3" poster="videos/posters/scene_11_imitation.jpg" src="videos/scene_11_imitation.mp4" aria-label="Scene 11: imitation baseline">
+                  <a href="videos/scene_11_imitation.mp4">Watch imitation video</a>.
+                </video>
+                <span class="playback-speed">3× speed</span>
+              </div>
+            </figure>
+            <figure>
+              <figcaption class="rl-label">RL fine-tuned</figcaption>
+              <div class="scene-video">
+                <video muted playsinline preload="none" data-playback-rate="2" poster="videos/posters/scene_11_rl.jpg" src="videos/scene_11_rl.mp4" aria-label="Scene 11: RL fine-tuned policy">
+                  <a href="videos/scene_11_rl.mp4">Watch RL video</a>.
+                </video>
+                <span class="playback-speed">2× speed</span>
+              </div>
+            </figure>
+          </div>
+          <p class="scene-task">Task: “put the <strong class="ood">blue</strong> teacup on the <strong class="ood">yellow</strong> teacup.”</p>
+          <p class="scene-distractors">Distractors: <strong class="ood">purple</strong> teacup, <strong class="ood">pink</strong> teapot, <strong class="ood">blue</strong> plate, <strong class="ood">yellow</strong> plate</p>
+        </article>
+      </div>
     </section>
 
     <section id="rl-training-example">
@@ -231,7 +839,7 @@
     </section>
 
     <section id="results">
-      <h2>Simulation Results</h2>
+      <h2>Effect of Scene Diversity on OOD Performance</h2>
       <div class="simulation-results-columns">
         <p>
           Increasing the number of training scenes $N$ improves zero-shot performance on out-of-distribution (OOD) scenes.
@@ -244,65 +852,6 @@
         <img class="result-figure" src="figures/scene_scaling.png" alt="Scene scaling results">
       </div>
       <img class="result-figure" src="figures/sim_results_table.png" alt="Simulation results table">
-    </section>
-
-    <section id="sim-to-real-examples">
-      <h2>Sim-to-Real Examples</h2>
-      <p>
-        We zero-shot sim-to-real deploy a policy trained on $N=100$ EmbodiedGen scenes and compare its performance with the VLA's initial performance.
-        <strong>RL fine-tuning with 100 generated scenes increases success from 21.7% to 75% while increasing the average task completion speed by 13% over 240 experiments across 12 real-world scenes. </strong>
-      </p>
-
-      <div class="video-comparison-header">
-        <div>Initial VLA</div>
-        <div>After RL fine-tuning</div>
-      </div>
-
-      <div class="video-comparison-row">
-        <div class="video-pair">
-          <video muted loop playsinline controls preload="metadata" src="videos/baseline_videos/blue_teacup_to_yellow_teacup.mp4"></video>
-          <video muted loop playsinline controls preload="metadata" src="videos/rl_videos/blue_teacup_to_yellow_teacup.mp4"></video>
-        </div>
-        <p class="video-label"><strong>Stack blue tea cup on the yellow tea cup.</strong>
-          The initial VLA misses the grasp on the blue tea cup
-           and erroneously moves toward the yellow tea cup without it. It then gets confused and grasps the purple tea cup instead.
-          After RL fine-tuning, the policy grasps the correct tea cup and stacks it onto the yellow one.
-        </p>
-      </div>
-
-      <div class="video-comparison-row">
-        <div class="video-pair">
-          <video muted loop playsinline controls preload="metadata" src="videos/baseline_videos/green_marker_to_basket.mp4"></video>
-          <video muted loop playsinline controls preload="metadata" src="videos/rl_videos/green_marker_to_basket.mp4"></video>
-        </div>
-        <p class="video-label"><strong>Put the green marker in the basket.</strong>
-          The initial VLA misses the grasp on the green marker
-          and then erroneously moves over to the basket, only to push it out-of-reach.
-          After RL fine-tuning, the policy correctly places the green marker inside the basket.
-        </p>
-      </div>
-
-      <div class="video-comparison-row">
-        <div class="video-pair">
-          <video muted loop playsinline controls preload="metadata" src="videos/baseline_videos/red_knife_to_cutting_board.mp4"></video>
-          <video muted loop playsinline controls preload="metadata" src="videos/rl_videos/red_knife_to_cutting_board.mp4"></video>
-        </div>
-        <p class="video-label"><strong>Put the red knife on the cutting board.</strong>
-          The initial VLA picks up the red knife but then drops it in confusion, hovering until timeout.
-          After RL fine-tuning, the policy also picks up the red knife but finishes placing it onto the cutting board.
-        </p>
-      </div>
-
-      <div class="video-comparison-row">
-        <div class="video-pair">
-          <video muted loop playsinline controls preload="metadata" src="videos/baseline_videos/screw_driver_to_basket.mp4"></video>
-          <video muted loop playsinline controls preload="metadata" src="videos/rl_videos/screw_driver_to_basket.mp4"></video>
-        </div>
-        <p class="video-label"><strong>Put the screwdriver in the basket.</strong>
-          The initial VLA attempts to grab the screwdriver but then gets confused and puts the knife in the basket instead.
-          After RL fine-tuning, the policy correctly places the screwdriver into the basket.
-        </p>
-      </div>
     </section>
 
     <section id="bibtex">
@@ -325,6 +874,14 @@
       </p>
     </section>
   </main>
+
+  <dialog class="overview-dialog" id="overview-dialog" aria-labelledby="overview-dialog-title">
+    <div class="overview-dialog-header">
+      <strong id="overview-dialog-title">Method overview</strong>
+      <button class="overview-close" type="button" autofocus>Close ×</button>
+    </div>
+    <img src="figures/front_page.png" alt="Enlarged method overview: demonstrations initialize the VLA, generated 3D scenes enable parallel RL fine-tuning, and the trained policy transfers to the real world.">
+  </dialog>
 
   <footer class="site-footer">
     <p class="footer-text"><strong>Horizon Robotics GAIL</strong></p>
